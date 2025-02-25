@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "jsonparser.h": "c",
+        "menu.h": "c",
+        "sprite.h": "c",
+        "array": "c",
+        "memory": "c",
+        "functional": "c",
+        "tuple": "c",
+        "utility": "c",
+        "inventory.h": "c"
+    }
+}
