@@ -64,11 +64,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.tiletable = newBitmapTable("images/grassybig", pd);
 		decodeItems("jsons/test.json", &game.itemlist);
 
-
-		// Sprite test = newSprite("images/player", pd, 0, 0);
-
 		game.chars[0].sprite = newAnimatedSprite("images/playeridle-table-32-32", pd, 0, 0, 4, 0.25);
-		const char *err = NULL;
 
 		int count, cellswide;
 		pd->graphics->getBitmapTableInfo(game.chars[0].sprite.table, &count, &cellswide);
@@ -132,9 +128,9 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		tree3 = newAnimatedSprite("images/tree-table-32-32", pd, 0, 32, 4, 0.25);
 		tree4 = newAnimatedSprite("images/tree-table-32-32", pd, 32, 32, 4, 0.25);
 
-		pd->system->addMenuItem("Overworld", menuChangeScene, 1);
-		pd->system->addMenuItem("Inventory", menuChangeScene, 2);
-		pd->system->addMenuItem("Fight", menuChangeScene, 3);
+		pd->system->addMenuItem("Overworld", menuChangeScene, (void*)1);
+		pd->system->addMenuItem("Inventory", menuChangeScene, (void*)2);
+		pd->system->addMenuItem("Fight", menuChangeScene, (void*)3);
 
         pd->system->setUpdateCallback(update, pd);
     } 
