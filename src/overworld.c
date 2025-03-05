@@ -97,7 +97,7 @@ void drawHub(Player* player, Camera* camera, World* world, int tile_id, Playdate
 void handle_info_overview(void* params, float dt) {
     OverworldParams* worldParams = (OverworldParams*)params;
     PlaydateAPI* pd = worldParams->pd;
-    Camera* camera = &worldParams->camera;
+    // Camera* camera = &worldParams->camera;
     World* world = worldParams->world;
     Player* player = worldParams->player;
     LCDBitmap* select = worldParams->select;
