@@ -59,13 +59,20 @@ void drawMap(Camera* camera, World* world, PlaydateAPI* pd) {
     }
 }
 
-void processPlayerInput(Player* player, PlaydateAPI* pd, PDButtons btn_const, PDButtons btn_pressed) {  
+void processPlayerInput(Player* player, World* world, PlaydateAPI* pd, PDButtons btn_const, PDButtons btn_pressed) {  
     int dx = 0, dy = 0;
     if (btn_const & kButtonLeft)      dx = -32;
     else if (btn_const & kButtonRight)  dx = 32;
     else if (btn_const & kButtonUp)     dy = -32;
     else if (btn_const & kButtonDown)   dy = 32;
-    
+
+    // Check if the player is trying to move outside the map
+    int new_x = player->sprite.x + dx;
+    int new_y = player->sprite.y + dy;
+    if (new_x < 0 || new_y < 0 || new_x > (world->width - 1) * 32 || new_y > (world->height - 1) * 32) {
+        return; // Do not move the player if the new position is outside the map
+    }
+
     if (dx || dy) {
         player->movement.startX = player->sprite.x;
         player->movement.startY = player->sprite.y;
@@ -126,7 +133,7 @@ void handle_info_overview(void* params, float dt) {
 void overworldUpdate(void* params, float dt) {
     OverworldParams* worldParams = (OverworldParams*)params;
     PlaydateAPI* pd = worldParams->pd;
-    Camera* camera = &worldParams->camera;
+    Camera* camera = &worldParams->camera; 
     World* world = worldParams->world;
     Player* player = worldParams->player;
     bool check_info = worldParams->check_info;
@@ -160,7 +167,7 @@ void overworldUpdate(void* params, float dt) {
             worldParams->selectY = player->sprite.y;
             return;
         }
-        processPlayerInput(player, pd, btn_const, btn_pressed);
+        processPlayerInput(player, world, pd, btn_const, btn_pressed);
     }
 
     if (player->movement.isMoving || player->movement.justFinished) {
