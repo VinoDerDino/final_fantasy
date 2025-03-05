@@ -1,2 +1,5 @@
 *.zip
 .vs
+build-dev/
+build-sim/
+hello-world.pdx/
