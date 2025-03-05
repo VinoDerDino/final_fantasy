@@ -12,6 +12,9 @@ typedef struct {
     Scenemanager scenemanager;
     ItemList itemlist;
     LCDBitmapTable* itemtable;
+    LCDBitmapTable* tiletable;
+    float lastFrameTime;
+    World world;
 } Game;
 
 #endif

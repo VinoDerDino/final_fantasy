@@ -1,9 +1,6 @@
 #include "scenemanager.h"
 
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams) {
-    if(manager->OnSceneExit) {
-        manager->OnSceneExit(manager->params.data);
-    }
     
     manager->params.type = type;
     manager->params.data = sceneParams;
@@ -17,10 +14,10 @@ void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams) {
             break;
         
         case OVERWORLD:
-            manager->OnSceneEnter = NULL;
-            manager->OnSceneExit = NULL;
-            manager->UpdateScene = NULL;
-            manager->DrawScene = NULL;
+            manager->OnSceneEnter = overworldEnter;
+            manager->OnSceneExit = overworldExit;
+            manager->UpdateScene = overworldUpdate;
+            manager->DrawScene = overworldDraw;
             break;
 
         case INVENTORY:
@@ -28,6 +25,13 @@ void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams) {
             manager->OnSceneExit = invOnExit;
             manager->UpdateScene = invUpdate;
             manager->DrawScene = invDraw;
+            break;
+
+        case BATTLE:
+            manager->OnSceneEnter = battleOnEnter;
+            manager->OnSceneExit = battleOnExit;
+            manager->UpdateScene = battleUpdate;
+            manager->DrawScene = battleDraw;
             break;
 
         default:
@@ -43,13 +47,13 @@ void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams) {
     }
 }
 
-void updateScene(Scenemanager manager) {
+void updateScene(Scenemanager manager, float dt, PlaydateAPI* pd) {
     if(manager.UpdateScene) {
-        manager.UpdateScene(manager.params.data);
-    }
+        manager.UpdateScene(manager.params.data, dt);
+    } 
 }
 
-void drawScene(Scenemanager manager) {
+void drawScene(Scenemanager manager, PlaydateAPI* pd) {
     if(manager.DrawScene) {
         manager.DrawScene(manager.params.data);
     }

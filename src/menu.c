@@ -40,7 +40,8 @@ void menu_add_button(Menu* menu, const char *txt, int x, int y, int width, int h
     if (menu->buttonCount >= MAX_BUTTONS) return;
 
     MenuButton* btn = &menu->buttons[menu->buttonCount++];
-    strncpy_s(btn->text, sizeof(btn->text), txt, _TRUNCATE);
+    strncpy(btn->text, txt, sizeof(btn->text) - 1);
+    btn->text[sizeof(btn->text) - 1] = '\0';
     btn->x = x;
     btn->y = y;
     btn->width = width;
@@ -57,7 +58,7 @@ void menu_add_sprite(Menu* menu, Sprite s) {
 
 void menu_add_animated_sprite(Menu* menu, AnimatedSprite s) {
     if(menu->animatedSpriteCount < MAX_SPRITES) {
-        menu->animatedSprites[menu->animatedSpriteCount++] = s; // Fix: richtiger Index
+        menu->animatedSprites[menu->animatedSpriteCount++] = s;
     }
 }
 

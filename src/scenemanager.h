@@ -5,11 +5,14 @@
 #include <stddef.h>
 
 #include "inventory.h"
+#include "overworld.h"
+#include "fight.h"
 
 typedef enum {
     MENU,
     OVERWORLD,
     INVENTORY,
+    BATTLE
 } Scenetypes;
 
 typedef struct {
@@ -20,13 +23,13 @@ typedef struct {
 typedef struct {
     void (*OnSceneEnter)(void* params);
     void (*OnSceneExit)(void* params);
-    void (*UpdateScene)(void* params);
+    void (*UpdateScene)(void* params, float dt);
     void (*DrawScene)(void* params);
     SceneParams params;
 } Scenemanager;
 
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams);
-void updateScene(Scenemanager manager);
-void drawScene(Scenemanager manager);
+void updateScene(Scenemanager manager, float dt, PlaydateAPI* pd);
+void drawScene(Scenemanager manager, PlaydateAPI* pd);
 
 #endif

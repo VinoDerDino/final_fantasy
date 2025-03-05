@@ -61,10 +61,50 @@ include CMakeFiles\hello_world.dir\progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles\hello_world.dir\flags.make
 
+CMakeFiles\hello_world.dir\src\enemy.c.obj: CMakeFiles\hello_world.dir\flags.make
+CMakeFiles\hello_world.dir\src\enemy.c.obj: E:\programming\playdate\finalfantasy\src\enemy.c
+CMakeFiles\hello_world.dir\src\enemy.c.obj: CMakeFiles\hello_world.dir\compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/hello_world.dir/src/enemy.c.obj"
+	$(CMAKE_COMMAND) -E cmake_cl_compile_depends --dep-file=CMakeFiles\hello_world.dir\src\enemy.c.obj.d --working-dir=E:\programming\playdate\finalfantasy\build-sim --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /showIncludes /FoCMakeFiles\hello_world.dir\src\enemy.c.obj /FdCMakeFiles\hello_world.dir\ /FS -c E:\programming\playdate\finalfantasy\src\enemy.c
+<<
+
+CMakeFiles\hello_world.dir\src\enemy.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/hello_world.dir/src/enemy.c.i"
+	C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe > CMakeFiles\hello_world.dir\src\enemy.c.i @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E E:\programming\playdate\finalfantasy\src\enemy.c
+<<
+
+CMakeFiles\hello_world.dir\src\enemy.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/hello_world.dir/src/enemy.c.s"
+	C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\hello_world.dir\src\enemy.c.s /c E:\programming\playdate\finalfantasy\src\enemy.c
+<<
+
+CMakeFiles\hello_world.dir\src\fight.c.obj: CMakeFiles\hello_world.dir\flags.make
+CMakeFiles\hello_world.dir\src\fight.c.obj: E:\programming\playdate\finalfantasy\src\fight.c
+CMakeFiles\hello_world.dir\src\fight.c.obj: CMakeFiles\hello_world.dir\compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/hello_world.dir/src/fight.c.obj"
+	$(CMAKE_COMMAND) -E cmake_cl_compile_depends --dep-file=CMakeFiles\hello_world.dir\src\fight.c.obj.d --working-dir=E:\programming\playdate\finalfantasy\build-sim --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /showIncludes /FoCMakeFiles\hello_world.dir\src\fight.c.obj /FdCMakeFiles\hello_world.dir\ /FS -c E:\programming\playdate\finalfantasy\src\fight.c
+<<
+
+CMakeFiles\hello_world.dir\src\fight.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/hello_world.dir/src/fight.c.i"
+	C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe > CMakeFiles\hello_world.dir\src\fight.c.i @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E E:\programming\playdate\finalfantasy\src\fight.c
+<<
+
+CMakeFiles\hello_world.dir\src\fight.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/hello_world.dir/src/fight.c.s"
+	C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\hello_world.dir\src\fight.c.s /c E:\programming\playdate\finalfantasy\src\fight.c
+<<
+
 CMakeFiles\hello_world.dir\src\inventory.c.obj: CMakeFiles\hello_world.dir\flags.make
 CMakeFiles\hello_world.dir\src\inventory.c.obj: E:\programming\playdate\finalfantasy\src\inventory.c
 CMakeFiles\hello_world.dir\src\inventory.c.obj: CMakeFiles\hello_world.dir\compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/hello_world.dir/src/inventory.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/hello_world.dir/src/inventory.c.obj"
 	$(CMAKE_COMMAND) -E cmake_cl_compile_depends --dep-file=CMakeFiles\hello_world.dir\src\inventory.c.obj.d --working-dir=E:\programming\playdate\finalfantasy\build-sim --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /showIncludes /FoCMakeFiles\hello_world.dir\src\inventory.c.obj /FdCMakeFiles\hello_world.dir\ /FS -c E:\programming\playdate\finalfantasy\src\inventory.c
 <<
@@ -84,7 +124,7 @@ CMakeFiles\hello_world.dir\src\inventory.c.s: cmake_force
 CMakeFiles\hello_world.dir\src\jsonparser.c.obj: CMakeFiles\hello_world.dir\flags.make
 CMakeFiles\hello_world.dir\src\jsonparser.c.obj: E:\programming\playdate\finalfantasy\src\jsonparser.c
 CMakeFiles\hello_world.dir\src\jsonparser.c.obj: CMakeFiles\hello_world.dir\compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/hello_world.dir/src/jsonparser.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/hello_world.dir/src/jsonparser.c.obj"
 	$(CMAKE_COMMAND) -E cmake_cl_compile_depends --dep-file=CMakeFiles\hello_world.dir\src\jsonparser.c.obj.d --working-dir=E:\programming\playdate\finalfantasy\build-sim --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /showIncludes /FoCMakeFiles\hello_world.dir\src\jsonparser.c.obj /FdCMakeFiles\hello_world.dir\ /FS -c E:\programming\playdate\finalfantasy\src\jsonparser.c
 <<
@@ -104,7 +144,7 @@ CMakeFiles\hello_world.dir\src\jsonparser.c.s: cmake_force
 CMakeFiles\hello_world.dir\src\main.c.obj: CMakeFiles\hello_world.dir\flags.make
 CMakeFiles\hello_world.dir\src\main.c.obj: E:\programming\playdate\finalfantasy\src\main.c
 CMakeFiles\hello_world.dir\src\main.c.obj: CMakeFiles\hello_world.dir\compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/hello_world.dir/src/main.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/hello_world.dir/src/main.c.obj"
 	$(CMAKE_COMMAND) -E cmake_cl_compile_depends --dep-file=CMakeFiles\hello_world.dir\src\main.c.obj.d --working-dir=E:\programming\playdate\finalfantasy\build-sim --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /showIncludes /FoCMakeFiles\hello_world.dir\src\main.c.obj /FdCMakeFiles\hello_world.dir\ /FS -c E:\programming\playdate\finalfantasy\src\main.c
 <<
@@ -124,7 +164,7 @@ CMakeFiles\hello_world.dir\src\main.c.s: cmake_force
 CMakeFiles\hello_world.dir\src\menu.c.obj: CMakeFiles\hello_world.dir\flags.make
 CMakeFiles\hello_world.dir\src\menu.c.obj: E:\programming\playdate\finalfantasy\src\menu.c
 CMakeFiles\hello_world.dir\src\menu.c.obj: CMakeFiles\hello_world.dir\compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/hello_world.dir/src/menu.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/hello_world.dir/src/menu.c.obj"
 	$(CMAKE_COMMAND) -E cmake_cl_compile_depends --dep-file=CMakeFiles\hello_world.dir\src\menu.c.obj.d --working-dir=E:\programming\playdate\finalfantasy\build-sim --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /showIncludes /FoCMakeFiles\hello_world.dir\src\menu.c.obj /FdCMakeFiles\hello_world.dir\ /FS -c E:\programming\playdate\finalfantasy\src\menu.c
 <<
@@ -141,10 +181,30 @@ CMakeFiles\hello_world.dir\src\menu.c.s: cmake_force
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\hello_world.dir\src\menu.c.s /c E:\programming\playdate\finalfantasy\src\menu.c
 <<
 
+CMakeFiles\hello_world.dir\src\overworld.c.obj: CMakeFiles\hello_world.dir\flags.make
+CMakeFiles\hello_world.dir\src\overworld.c.obj: E:\programming\playdate\finalfantasy\src\overworld.c
+CMakeFiles\hello_world.dir\src\overworld.c.obj: CMakeFiles\hello_world.dir\compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/hello_world.dir/src/overworld.c.obj"
+	$(CMAKE_COMMAND) -E cmake_cl_compile_depends --dep-file=CMakeFiles\hello_world.dir\src\overworld.c.obj.d --working-dir=E:\programming\playdate\finalfantasy\build-sim --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /showIncludes /FoCMakeFiles\hello_world.dir\src\overworld.c.obj /FdCMakeFiles\hello_world.dir\ /FS -c E:\programming\playdate\finalfantasy\src\overworld.c
+<<
+
+CMakeFiles\hello_world.dir\src\overworld.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/hello_world.dir/src/overworld.c.i"
+	C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe > CMakeFiles\hello_world.dir\src\overworld.c.i @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E E:\programming\playdate\finalfantasy\src\overworld.c
+<<
+
+CMakeFiles\hello_world.dir\src\overworld.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/hello_world.dir/src/overworld.c.s"
+	C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\hello_world.dir\src\overworld.c.s /c E:\programming\playdate\finalfantasy\src\overworld.c
+<<
+
 CMakeFiles\hello_world.dir\src\scenemanager.c.obj: CMakeFiles\hello_world.dir\flags.make
 CMakeFiles\hello_world.dir\src\scenemanager.c.obj: E:\programming\playdate\finalfantasy\src\scenemanager.c
 CMakeFiles\hello_world.dir\src\scenemanager.c.obj: CMakeFiles\hello_world.dir\compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/hello_world.dir/src/scenemanager.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/hello_world.dir/src/scenemanager.c.obj"
 	$(CMAKE_COMMAND) -E cmake_cl_compile_depends --dep-file=CMakeFiles\hello_world.dir\src\scenemanager.c.obj.d --working-dir=E:\programming\playdate\finalfantasy\build-sim --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /showIncludes /FoCMakeFiles\hello_world.dir\src\scenemanager.c.obj /FdCMakeFiles\hello_world.dir\ /FS -c E:\programming\playdate\finalfantasy\src\scenemanager.c
 <<
@@ -164,7 +224,7 @@ CMakeFiles\hello_world.dir\src\scenemanager.c.s: cmake_force
 CMakeFiles\hello_world.dir\src\sprite.c.obj: CMakeFiles\hello_world.dir\flags.make
 CMakeFiles\hello_world.dir\src\sprite.c.obj: E:\programming\playdate\finalfantasy\src\sprite.c
 CMakeFiles\hello_world.dir\src\sprite.c.obj: CMakeFiles\hello_world.dir\compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/hello_world.dir/src/sprite.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/hello_world.dir/src/sprite.c.obj"
 	$(CMAKE_COMMAND) -E cmake_cl_compile_depends --dep-file=CMakeFiles\hello_world.dir\src\sprite.c.obj.d --working-dir=E:\programming\playdate\finalfantasy\build-sim --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\cl.exe @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /showIncludes /FoCMakeFiles\hello_world.dir\src\sprite.c.obj /FdCMakeFiles\hello_world.dir\ /FS -c E:\programming\playdate\finalfantasy\src\sprite.c
 <<
@@ -183,25 +243,31 @@ CMakeFiles\hello_world.dir\src\sprite.c.s: cmake_force
 
 # Object files for target hello_world
 hello_world_OBJECTS = \
+"CMakeFiles\hello_world.dir\src\enemy.c.obj" \
+"CMakeFiles\hello_world.dir\src\fight.c.obj" \
 "CMakeFiles\hello_world.dir\src\inventory.c.obj" \
 "CMakeFiles\hello_world.dir\src\jsonparser.c.obj" \
 "CMakeFiles\hello_world.dir\src\main.c.obj" \
 "CMakeFiles\hello_world.dir\src\menu.c.obj" \
+"CMakeFiles\hello_world.dir\src\overworld.c.obj" \
 "CMakeFiles\hello_world.dir\src\scenemanager.c.obj" \
 "CMakeFiles\hello_world.dir\src\sprite.c.obj"
 
 # External object files for target hello_world
 hello_world_EXTERNAL_OBJECTS =
 
+hello_world.dll: CMakeFiles\hello_world.dir\src\enemy.c.obj
+hello_world.dll: CMakeFiles\hello_world.dir\src\fight.c.obj
 hello_world.dll: CMakeFiles\hello_world.dir\src\inventory.c.obj
 hello_world.dll: CMakeFiles\hello_world.dir\src\jsonparser.c.obj
 hello_world.dll: CMakeFiles\hello_world.dir\src\main.c.obj
 hello_world.dll: CMakeFiles\hello_world.dir\src\menu.c.obj
+hello_world.dll: CMakeFiles\hello_world.dir\src\overworld.c.obj
 hello_world.dll: CMakeFiles\hello_world.dir\src\scenemanager.c.obj
 hello_world.dll: CMakeFiles\hello_world.dir\src\sprite.c.obj
 hello_world.dll: CMakeFiles\hello_world.dir\build.make
 hello_world.dll: CMakeFiles\hello_world.dir\objects1.rsp
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking C shared library hello_world.dll"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=E:\programming\playdate\finalfantasy\build-sim\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking C shared library hello_world.dll"
 	"C:\Program Files\CMake\bin\cmake.exe" -E vs_link_dll --intdir=CMakeFiles\hello_world.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100261~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100261~1.0\x64\mt.exe --manifests -- C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1443~1.348\bin\Hostx64\x64\link.exe /nologo @CMakeFiles\hello_world.dir\objects1.rsp @<<
  /out:hello_world.dll /implib:hello_world.lib /pdb:E:\programming\playdate\finalfantasy\build-sim\hello_world.pdb /dll /version:0.0 /machine:x64 /debug /INCREMENTAL  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib  
 <<

@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #define TARGET_EXTENSION 1
 
 #include "pd_api.h"
@@ -9,25 +6,73 @@
 #include "jsonparser.h"
 #include "inventory.h"
 #include "game.h"
+#include "overworld.h"
+#include "fight.h"
 
 static int update(void* userdata);
 
 PlaydateAPI *pd = NULL;
 Game game;
+World world;
+LCDFont* font = NULL;
+
+AnimatedSprite tree1;
+AnimatedSprite tree2;
+AnimatedSprite tree3;
+AnimatedSprite tree4;
+
+InventoryParams params;
+OverworldParams o_params;
+BattleParams b_params;
+
+AnimatedSprite player_idle;
+
+AudioSample* sample;
 
 #ifdef _WINDLL
 __declspec(dllexport)
 #endif
 
+void menuChangeScene(void *userdata) {
+	int type = (int)userdata;
+	switch (type)
+	{
+	case 1:
+		changeScene(&game.scenemanager, OVERWORLD, &o_params);
+		break;
+	
+	case 2:
+		changeScene(&game.scenemanager, INVENTORY, &params);
+		break;
+
+	case 3:
+		changeScene(&game.scenemanager, BATTLE, &b_params);
+		break;
+
+	default:
+		break;
+	}
+}
+
 int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
     (void)arg;
-	pd = playdate;
     
 	if (event == kEventInit) {
+		pd = playdate;
 		pd->display->setRefreshRate(0);
-
-		game.itemtable = newBitmapTable("images/swag", pd, 50, 16, 16);
+		game.itemtable = newBitmapTable("images/monsters", pd); 
+		game.tiletable = newBitmapTable("images/grassybig", pd);
 		decodeItems("jsons/test.json", &game.itemlist);
+
+
+		// Sprite test = newSprite("images/player", pd, 0, 0);
+
+		game.chars[0].sprite = newAnimatedSprite("images/playeridle-table-32-32", pd, 0, 0, 4, 0.25);
+		const char *err = NULL;
+
+		int count, cellswide;
+		pd->graphics->getBitmapTableInfo(game.chars[0].sprite.table, &count, &cellswide);
+		pd->system->logToConsole("INFO count: %d, cellswide: %d", count, cellswide);
 
 		game.chars[0].inventory.items[0] = game.itemlist.items[0];
 		game.chars[0].inventory.items[1] = game.itemlist.items[1];
@@ -48,14 +93,48 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 
 		game.chars[0].inventory.count = 16;
 		game.chars[0].inventory.curr_pos = 0;
+		game.chars[0].movement = (PlayerMovement){0};
 
-		InventoryParams params = {
-			.inv = &game.chars[0].inventory,
-			.pd = pd,
-			.selectedItem = 1
-		};
+		game.lastFrameTime = 0;
+
+		params.inv = &game.chars[0].inventory;
+		params.pd = pd;
+		params.selectedItem = 1;
+
+		world.width = 20;
+		world.height = 20;
+		for(int i = 0; i < world.width; i++) {
+			for(int j = 0; j < world.height; j++) {
+				world.tiles[i + j * world.width] = i * j % 5;
+			}
+		}
+		world.tile_sprites = newBitmapTable("images/grassybig", pd);
 		
-		changeScene(&game.scenemanager, INVENTORY, &params);
+		o_params.pd = pd;
+		o_params.world = &world;
+		o_params.player = &game.chars[0];
+		o_params.camera.x = o_params.player->sprite.x;
+		o_params.camera.y = o_params.player->sprite.y;
+		o_params.camera.maxX = 20 * 32;
+		o_params.camera.maxY = 20 * 32;
+		o_params.select = newBitmap("images/select", pd);
+
+		b_params.pd = pd;
+		b_params.selectX = 0;
+		b_params.selectY = 0;
+		b_params.select = newBitmapTable("images/select", pd);
+		b_params.monsters = game.itemtable;
+
+		changeScene(&game.scenemanager, OVERWORLD, &o_params);
+
+		tree1 = newAnimatedSprite("images/tree-table-32-32", pd, 0, 0, 4, 0.25);
+		tree2 = newAnimatedSprite("images/tree-table-32-32", pd, 32, 0, 4, 0.25);
+		tree3 = newAnimatedSprite("images/tree-table-32-32", pd, 0, 32, 4, 0.25);
+		tree4 = newAnimatedSprite("images/tree-table-32-32", pd, 32, 32, 4, 0.25);
+
+		pd->system->addMenuItem("Overworld", menuChangeScene, 1);
+		pd->system->addMenuItem("Inventory", menuChangeScene, 2);
+		pd->system->addMenuItem("Fight", menuChangeScene, 3);
 
         pd->system->setUpdateCallback(update, pd);
     } 
@@ -65,8 +144,12 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 
 static int update(void* userdata) {
 
-	updateScene(game.scenemanager);
-	drawScene(game.scenemanager);
+	float currTime = pd->system->getCurrentTimeMilliseconds() / 1000.0f;
+	float dt = currTime - game.lastFrameTime;
+	game.lastFrameTime = currTime;
+
+	updateScene(game.scenemanager, dt, pd);
+	pd->system->drawFPS(0, 230);
 
     return 1;
-}
+} 

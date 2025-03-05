@@ -1,4 +1,4 @@
-E:/programming/playdate/finalfantasy/src/jsonloader.h
+E:/programming/playdate/finalfantasy/src/fight.h
 E:/programming/playdate/finalfantasy/src/pd_api.h
 C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/include/stdint.h
 C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/include/vcruntime.h
@@ -30,3 +30,12 @@ C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/ucrt/math.h
 C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/ucrt/corecrt_math.h
 E:/programming/playdate/finalfantasy/src/pd_api/pd_api_display.h
 E:/programming/playdate/finalfantasy/src/pd_api/pd_api_scoreboards.h
+E:/programming/playdate/finalfantasy/src/player.h
+C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/include/stdbool.h
+E:/programming/playdate/finalfantasy/src/inventory.h
+E:/programming/playdate/finalfantasy/src/item.h
+E:/programming/playdate/finalfantasy/src/sprite.h
+C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/ucrt/stdio.h
+C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/ucrt/corecrt_wstdio.h
+C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/ucrt/corecrt_stdio_config.h
+E:/programming/playdate/finalfantasy/src/enemy.h

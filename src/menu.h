@@ -1,6 +1,8 @@
 #ifndef MENU_H_
 #define MENU_H_
 
+#define TARGET_EXTENSION 1
+
 #include "pd_api.h"
 #include "sprite.h"
 #include "item.h"

@@ -8,6 +8,26 @@
         "functional": "c",
         "tuple": "c",
         "utility": "c",
-        "inventory.h": "c"
+        "inventory.h": "c",
+        "scenemanager.h": "c",
+        "overworld.h": "c",
+        "stdio.h": "c",
+        "item.h": "c",
+        "stdint.h": "c",
+        "pd_api.h": "c",
+        "sceneparams.h": "c",
+        "game.h": "c",
+        "stdlib.h": "c",
+        "camera.h": "c",
+        "stdbool.h": "c",
+        "pd_api_gfx.h": "c",
+        "player.h": "c",
+        "fight.h": "c",
+        "*.tcc": "c",
+        "deque": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "vector": "c",
+        "system_error": "c"
     }
 }

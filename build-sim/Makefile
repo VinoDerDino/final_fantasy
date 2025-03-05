@@ -121,6 +121,54 @@ hello_world\fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\build
 .PHONY : hello_world\fast
 
+src\enemy.obj: src\enemy.c.obj
+.PHONY : src\enemy.obj
+
+# target to build an object file
+src\enemy.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\enemy.c.obj
+.PHONY : src\enemy.c.obj
+
+src\enemy.i: src\enemy.c.i
+.PHONY : src\enemy.i
+
+# target to preprocess a source file
+src\enemy.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\enemy.c.i
+.PHONY : src\enemy.c.i
+
+src\enemy.s: src\enemy.c.s
+.PHONY : src\enemy.s
+
+# target to generate assembly for a file
+src\enemy.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\enemy.c.s
+.PHONY : src\enemy.c.s
+
+src\fight.obj: src\fight.c.obj
+.PHONY : src\fight.obj
+
+# target to build an object file
+src\fight.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\fight.c.obj
+.PHONY : src\fight.c.obj
+
+src\fight.i: src\fight.c.i
+.PHONY : src\fight.i
+
+# target to preprocess a source file
+src\fight.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\fight.c.i
+.PHONY : src\fight.c.i
+
+src\fight.s: src\fight.c.s
+.PHONY : src\fight.s
+
+# target to generate assembly for a file
+src\fight.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\fight.c.s
+.PHONY : src\fight.c.s
+
 src\inventory.obj: src\inventory.c.obj
 .PHONY : src\inventory.obj
 
@@ -217,6 +265,30 @@ src\menu.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\menu.c.s
 .PHONY : src\menu.c.s
 
+src\overworld.obj: src\overworld.c.obj
+.PHONY : src\overworld.obj
+
+# target to build an object file
+src\overworld.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\overworld.c.obj
+.PHONY : src\overworld.c.obj
+
+src\overworld.i: src\overworld.c.i
+.PHONY : src\overworld.i
+
+# target to preprocess a source file
+src\overworld.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\overworld.c.i
+.PHONY : src\overworld.c.i
+
+src\overworld.s: src\overworld.c.s
+.PHONY : src\overworld.s
+
+# target to generate assembly for a file
+src\overworld.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\hello_world.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\hello_world.dir\src\overworld.c.s
+.PHONY : src\overworld.c.s
+
 src\scenemanager.obj: src\scenemanager.c.obj
 .PHONY : src\scenemanager.obj
 
@@ -274,6 +346,12 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... hello_world
+	@echo ... src/enemy.obj
+	@echo ... src/enemy.i
+	@echo ... src/enemy.s
+	@echo ... src/fight.obj
+	@echo ... src/fight.i
+	@echo ... src/fight.s
 	@echo ... src/inventory.obj
 	@echo ... src/inventory.i
 	@echo ... src/inventory.s
@@ -286,6 +364,9 @@ help:
 	@echo ... src/menu.obj
 	@echo ... src/menu.i
 	@echo ... src/menu.s
+	@echo ... src/overworld.obj
+	@echo ... src/overworld.i
+	@echo ... src/overworld.s
 	@echo ... src/scenemanager.obj
 	@echo ... src/scenemanager.i
 	@echo ... src/scenemanager.s

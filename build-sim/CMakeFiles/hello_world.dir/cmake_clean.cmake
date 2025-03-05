@@ -1,4 +1,8 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/hello_world.dir/src/enemy.c.obj"
+  "CMakeFiles/hello_world.dir/src/enemy.c.obj.d"
+  "CMakeFiles/hello_world.dir/src/fight.c.obj"
+  "CMakeFiles/hello_world.dir/src/fight.c.obj.d"
   "CMakeFiles/hello_world.dir/src/inventory.c.obj"
   "CMakeFiles/hello_world.dir/src/inventory.c.obj.d"
   "CMakeFiles/hello_world.dir/src/jsonparser.c.obj"
@@ -7,6 +11,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/hello_world.dir/src/main.c.obj.d"
   "CMakeFiles/hello_world.dir/src/menu.c.obj"
   "CMakeFiles/hello_world.dir/src/menu.c.obj.d"
+  "CMakeFiles/hello_world.dir/src/overworld.c.obj"
+  "CMakeFiles/hello_world.dir/src/overworld.c.obj.d"
   "CMakeFiles/hello_world.dir/src/scenemanager.c.obj"
   "CMakeFiles/hello_world.dir/src/scenemanager.c.obj.d"
   "CMakeFiles/hello_world.dir/src/sprite.c.obj"

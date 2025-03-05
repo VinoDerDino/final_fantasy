@@ -5,7 +5,7 @@
 #include "sprite.h"
 #include <stdint.h>
 
-#define MAX_ITEMS 30
+#define MAX_ITEMS 100
 #define MAX_NAME_LEN 20
 #define MAX_DESC_LEN 50
 
@@ -28,8 +28,8 @@ typedef enum {
 
 typedef struct {
     uint8_t id;
-    char name[MAX_NAME_LEN];
-    char description[MAX_DESC_LEN];
+    char *name;
+    char *description;
     ItemType type;
     
     union {

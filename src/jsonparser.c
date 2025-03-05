@@ -54,10 +54,10 @@ void decodeChars(const char *path, PlayerList *list) {
 }
 
 void decodeCharsPreview(const char *path, PlayerPreviewList *list) {
-    json_decoder decoder = getDecoderCharsPreview(list);
-    SDFile *file = pd->file->open(path, kFileRead);
-    pd->json->decode(&decoder, (json_reader){ .read = readFile, .userdata = file}, NULL);
-    pd->file->close(file);
+    // json_decoder decoder = getDecoderCharsPreview(list);
+    // SDFile *file = pd->file->open(path, kFileRead);
+    // pd->json->decode(&decoder, (json_reader){ .read = readFile, .userdata = file}, NULL);
+    // pd->file->close(file);
 }
 
 int readFile(void* userdata, uint8_t* buf, int bufsize) {
@@ -76,9 +76,9 @@ void didDecodeTableValueItems(json_decoder* decoder, const char* key, json_value
         item->id = value.data.intval;
         item->icon = newSpriteFromTable(game.itemtable, value.data.intval, pd, 0, 0);
     } else if (strcmp(key, "name") == 0) {
-        strncpy(item->name, value.data.stringval, MAX_NAME_LEN);
+        item->name = json_stringValue(value);
     } else if (strcmp(key, "description") == 0) {
-        strncpy(item->description, value.data.stringval, MAX_DESC_LEN);
+        item->description = json_stringValue(value);
     } else if (strcmp(key, "type") == 0) {
         if (strcmp(value.data.stringval, "potion") == 0) item->type = ITEM_TYPE_POTION;
         else if (strcmp(value.data.stringval, "weapon") == 0) item->type = ITEM_TYPE_WEAPON;
@@ -117,7 +117,7 @@ void didDecodeTableValueChar(json_decoder* decoder, const char* key, json_value 
     if (strcmp(key, "id") == 0) {
         player->id = value.data.intval;
     } else if (strcmp(key, "name") == 0) {
-        strncpy(player->name, value.data.stringval, MAX_NAME_LENGTH);
+        player->name = json_stringValue(value);
     } else if (strcmp(key, "health")) {
         player->health = value.data.intval;
     } else if (strcmp(key, "maxHealth") == 0) {
@@ -138,7 +138,7 @@ void* didDecodeSublistItems(json_decoder* decoder, const char* name, json_value_
         if (list->current_index < MAX_ITEMS) {
             return &list->items[list->current_index];
         } else {
-            pd->system->logToConsole("ItemList ist voll!");
+            pd->system->logToConsole("ItemList ist voll! List index: %d", list->current_index);
             return NULL;
         }
     }
@@ -169,6 +169,7 @@ void willDecodeSublistItems(json_decoder* decoder, const char* name, json_value_
     ItemList* list = (ItemList*)decoder->userdata;
     if (type == kJSONTable && strcmp(name, "_root") != 0) {
         if (list->current_index < MAX_ITEMS) {
+            pd->system->logToConsole("Curr index decode sublist: %d", list->current_index);
             decoder->userdata = &list->items[list->current_index++];
         }
     }

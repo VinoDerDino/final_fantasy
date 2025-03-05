@@ -19,9 +19,7 @@
         ]
       }
     },
-          
-    // Create the build-sim directory for storing makefiles etc that build the libraries for the simulator binary.
-    // We need the folder to be present or things go wrong later.
+        
     {
       "label": "make build-sim dir",
       "type": "shell",
@@ -30,7 +28,6 @@
         "-p",
         "build-sim"
       ],
-      // windows mkdir still errors on an existing folder, so we need to do an if, and powershell seems to hate it
       "windows": {
         "command": "cmd.exe",
         "args": [
@@ -41,7 +38,6 @@
       }
     },
 
-    // Create the build-sim and Source directory for storing makefiles etc that build the libraries for the simulator binary.
     {
       "label": "make build-dev dir",
       "type": "shell",
@@ -70,7 +66,6 @@
     {
       "label": "CMake-sim step",
       "type": "shell",
-      // Unter Nicht-Windows bleibt der Standardbefehl erhalten (z. B. "cmake ..")
       "command": "cmake",
       "args": [
         ".."
@@ -83,7 +78,6 @@
         }
       },
       "windows": {
-        // Unter Windows wird der gesamte Befehl via cmd.exe ausgeführt – mit call, damit vcvars64.bat korrekt aufgerufen wird.
         "command": "cmd.exe",
         "args": [
           "/d",
@@ -100,7 +94,6 @@
     {
       "label": "Playdate: Build simulator",
       "type": "shell",
-      // Unter Nicht-Windows bleibt "make" erhalten
       "command": "make",
       "options": {
         "cwd": "${workspaceFolder}/build-sim",
@@ -136,65 +129,77 @@
     ///
 
     {
+      "label": "Playdate: Build device",
+      "type": "shell",  
+      "command":  "make",
+      "options":{
+        "cwd": "${workspaceFolder}/build-dev",
+      },
+      "windows": {            
+          "command":  "cmd.exe",
+          "options":{
+            "env":{
+              "cwd": "${workspaceFolder}\\build-dev",
+              "__shellPath": "\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat\""
+            }
+          },
+          "args": [
+            "/d",
+            "/c",
+            // The path to VsDevCmd.bat depends on the version of Visual Studio you have installed.
+            "\"%__shellPath%",
+            "^'&'",
+            "nmake.exe\"",
+          ],
+          "dependsOrder": "sequence",
+          "dependsOn":["make build-dev dir", "CMake-dev step"]
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOrder": "sequence",
+      "dependsOn":["make Source dir", "make build-dev dir", "CMake-dev step"]
+    },
+
+    // Create makefiles to build the simulator binary
+    {
       "label": "CMake-dev step",
       "type": "shell",
-      "command": "cmake",
-      "args": [
+      "command":  "cmake",
+      "args":[
         "-DCMAKE_TOOLCHAIN_FILE=${env:PLAYDATE_SDK_PATH}/C_API/buildsupport/arm.cmake",
-        ".."
-      ],
-      "options": {
+        "..",        
+      ], 
+      "options":{
         "cwd": "${workspaceFolder}/build-dev",
-        "shell": {
-          "executable": "cmd.exe",
-          "args": ["/d", "/c"]
-        }
       },
-      "windows": {
-        // Hier wird nun der absolute Pfad genutzt anstelle der Umgebungsvariable
-        "command": "cmd.exe",
-        "args": [
-          "/d",
-          "/c",
-          "call \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat\" && cmake -G \"NMake Makefiles\" .. --toolchain=${env:PLAYDATE_SDK_PATH}/C_API/buildsupport/arm.cmake"
-        ]
+      "windows": {            
+          "command":  "cmd.exe",
+          "options":{
+            "env":{
+              "cwd": "${workspaceFolder}\\build-dev",
+              "__makefileName": "\"NMake Makefiles\"",
+              "__shellPath": "\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat\""
+            }
+          },
+          "args": [
+            "/d",
+            "/c",
+            // The path to VsDevCmd.bat depends on the version of Visual Studio you have installed.
+            "\"%__shellPath%",
+            "^'&'",
+            "cmake",
+            "-G",
+            "%__makefileName%",
+            "..",
+            "--toolchain=E:/programming/PlaydateSDK/C_API/buildsupport/arm.cmake",
+          ]
       },
       "group": {
         "kind": "build",
         "isDefault": false
-      }
+      },
     },
-
-    {
-      "label": "Playdate: Build device",
-      "type": "shell",
-      "command": "make",
-      "options": {
-        "cwd": "${workspaceFolder}/build-dev",
-        "shell": {
-          "executable": "cmd.exe",
-          "args": ["/d", "/c"]
-        }
-      },
-      "windows": {
-        // Hier wird ebenfalls der absolute Pfad genutzt:
-        "command": "cmd.exe",
-        "args": [
-          "/d",
-          "/c",
-          "call \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat\" && nmake.exe"
-        ]
-      },
-      "dependsOrder": "sequence",
-      "dependsOn": [
-        "make Source dir",
-        "make build-dev dir",
-        "CMake-dev step"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    }
   ]
 }

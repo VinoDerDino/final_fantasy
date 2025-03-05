@@ -5,12 +5,11 @@
 
 #include "pd_api.h"
 #include "item.h"
-#include "player.h"
 #include "sprite.h"
 
 #define MAX_ITEMS_IN_INVENTORY 50
 
-typedef struct  {
+typedef struct Inventory_S {
     Item items[MAX_ITEMS_IN_INVENTORY];
     int count;
     int curr_pos;
@@ -18,13 +17,13 @@ typedef struct  {
 
 typedef struct {
     PlaydateAPI* pd;
-    int selectedItem;
+    float selectedItem;
     Inventory* inv;
 } InventoryParams;
 
 void invOnEnter(void* params);
 void invOnExit(void* params);
-void invUpdate(void* params);
+void invUpdate(void* params, float dt);
 void invDraw(void* params);
 
 #endif

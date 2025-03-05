@@ -35,4 +35,3 @@ E:/programming/playdate/finalfantasy/src/sprite.h
 C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/ucrt/stdio.h
 C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/ucrt/corecrt_wstdio.h
 C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/ucrt/corecrt_stdio_config.h
-E:/programming/playdate/finalfantasy/src/player.h

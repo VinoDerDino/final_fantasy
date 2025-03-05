@@ -480,8 +480,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "E:/programming/playdate/finalfantasy/build-sim/CMakeFiles/CMakeScratch/TryCompile-b8aer6"
-      binary: "E:/programming/playdate/finalfantasy/build-sim/CMakeFiles/CMakeScratch/TryCompile-b8aer6"
+      source: "E:/programming/playdate/finalfantasy/build-sim/CMakeFiles/CMakeScratch/TryCompile-zakivx"
+      binary: "E:/programming/playdate/finalfantasy/build-sim/CMakeFiles/CMakeScratch/TryCompile-zakivx"
     cmakeVariables:
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
       CMAKE_C_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -490,28 +490,28 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'E:/programming/playdate/finalfantasy/build-sim/CMakeFiles/CMakeScratch/TryCompile-b8aer6'
+        Change Dir: 'E:/programming/playdate/finalfantasy/build-sim/CMakeFiles/CMakeScratch/TryCompile-zakivx'
         
-        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 nmake -f Makefile /nologo cmTC_d3693\\fast
-        	"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\bin\\HostX64\\x64\\nmake.exe"  -f CMakeFiles\\cmTC_d3693.dir\\build.make /nologo -L                  CMakeFiles\\cmTC_d3693.dir\\build
-        Building C object CMakeFiles/cmTC_d3693.dir/CMakeCCompilerABI.c.obj
-        	"C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_cl_compile_depends --dep-file=CMakeFiles\\cmTC_d3693.dir\\CMakeCCompilerABI.c.obj.d --working-dir=E:\\programming\\playdate\\finalfantasy\\build-sim\\CMakeFiles\\CMakeScratch\\TryCompile-b8aer6 --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\cl.exe @C:\\Users\\berge\\AppData\\Local\\Temp\\nm6946.tmp
+        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 nmake -f Makefile /nologo cmTC_06d98\\fast
+        	"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\bin\\HostX64\\x64\\nmake.exe"  -f CMakeFiles\\cmTC_06d98.dir\\build.make /nologo -L                  CMakeFiles\\cmTC_06d98.dir\\build
+        Building C object CMakeFiles/cmTC_06d98.dir/CMakeCCompilerABI.c.obj
+        	"C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_cl_compile_depends --dep-file=CMakeFiles\\cmTC_06d98.dir\\CMakeCCompilerABI.c.obj.d --working-dir=E:\\programming\\playdate\\finalfantasy\\build-sim\\CMakeFiles\\CMakeScratch\\TryCompile-zakivx --filter-prefix="Hinweis: Einlesen der Datei: " -- C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\cl.exe @C:\\Users\\berge\\AppData\\Local\\Temp\\nm5111.tmp
         CMakeCCompilerABI.c
-        Linking C executable cmTC_d3693.exe
-        	"C:\\Program Files\\CMake\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_d3693.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests -- C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo @CMakeFiles\\cmTC_d3693.dir\\objects1.rsp @C:\\Users\\berge\\AppData\\Local\\Temp\\nm6A9F.tmp
+        Linking C executable cmTC_06d98.exe
+        	"C:\\Program Files\\CMake\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_06d98.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests -- C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo @CMakeFiles\\cmTC_06d98.dir\\objects1.rsp @C:\\Users\\berge\\AppData\\Local\\Temp\\nm5170.tmp
         Visual Studio Incremental Link with embedded manifests
-        Create CMakeFiles\\cmTC_d3693.dir/manifest.rc
-        Create empty: CMakeFiles\\cmTC_d3693.dir/embed.manifest
+        Create CMakeFiles\\cmTC_06d98.dir/manifest.rc
+        Create empty: CMakeFiles\\cmTC_06d98.dir/embed.manifest
         RC Pass 1:
-        C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe /fo CMakeFiles\\cmTC_d3693.dir/manifest.res CMakeFiles\\cmTC_d3693.dir/manifest.rc
+        C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe /fo CMakeFiles\\cmTC_06d98.dir/manifest.res CMakeFiles\\cmTC_06d98.dir/manifest.rc
         LINK Pass 1:
-        C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo @CMakeFiles\\cmTC_d3693.dir\\objects1.rsp /out:cmTC_d3693.exe /implib:cmTC_d3693.lib /pdb:E:\\programming\\playdate\\finalfantasy\\build-sim\\CMakeFiles\\CMakeScratch\\TryCompile-b8aer6\\cmTC_d3693.pdb /version:0.0 /machine:x64 /debug /INCREMENTAL /subsystem:console kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\\cmTC_d3693.dir/intermediate.manifest CMakeFiles\\cmTC_d3693.dir/manifest.res
+        C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo @CMakeFiles\\cmTC_06d98.dir\\objects1.rsp /out:cmTC_06d98.exe /implib:cmTC_06d98.lib /pdb:E:\\programming\\playdate\\finalfantasy\\build-sim\\CMakeFiles\\CMakeScratch\\TryCompile-zakivx\\cmTC_06d98.pdb /version:0.0 /machine:x64 /debug /INCREMENTAL /subsystem:console kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\\cmTC_06d98.dir/intermediate.manifest CMakeFiles\\cmTC_06d98.dir/manifest.res
         MT:
-        C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe /nologo /manifest CMakeFiles\\cmTC_d3693.dir/intermediate.manifest /out:CMakeFiles\\cmTC_d3693.dir/embed.manifest /notify_update
+        C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe /nologo /manifest CMakeFiles\\cmTC_06d98.dir/intermediate.manifest /out:CMakeFiles\\cmTC_06d98.dir/embed.manifest /notify_update
         RC Pass 2:
-        C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe /fo CMakeFiles\\cmTC_d3693.dir/manifest.res CMakeFiles\\cmTC_d3693.dir/manifest.rc
+        C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe /fo CMakeFiles\\cmTC_06d98.dir/manifest.res CMakeFiles\\cmTC_06d98.dir/manifest.rc
         FINAL LINK:
-        C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo @CMakeFiles\\cmTC_d3693.dir\\objects1.rsp /out:cmTC_d3693.exe /implib:cmTC_d3693.lib /pdb:E:\\programming\\playdate\\finalfantasy\\build-sim\\CMakeFiles\\CMakeScratch\\TryCompile-b8aer6\\cmTC_d3693.pdb /version:0.0 /machine:x64 /debug /INCREMENTAL /subsystem:console kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\\cmTC_d3693.dir/intermediate.manifest CMakeFiles\\cmTC_d3693.dir/manifest.res
+        C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo @CMakeFiles\\cmTC_06d98.dir\\objects1.rsp /out:cmTC_06d98.exe /implib:cmTC_06d98.lib /pdb:E:\\programming\\playdate\\finalfantasy\\build-sim\\CMakeFiles\\CMakeScratch\\TryCompile-zakivx\\cmTC_06d98.pdb /version:0.0 /machine:x64 /debug /INCREMENTAL /subsystem:console kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\\cmTC_06d98.dir/intermediate.manifest CMakeFiles\\cmTC_06d98.dir/manifest.res
         
       exitCode: 0
   -
