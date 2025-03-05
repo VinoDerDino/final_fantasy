@@ -1,3 +1,0 @@
-E:/programming/playdate/finalfantasy/build-dev/CMakeFiles/hello_world_DEVICE.dir
-E:/programming/playdate/finalfantasy/build-dev/CMakeFiles/edit_cache.dir
-E:/programming/playdate/finalfantasy/build-dev/CMakeFiles/rebuild_cache.dir
