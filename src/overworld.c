@@ -3,6 +3,8 @@
 void overworldEnter(void* params) {
     OverworldParams* worldParams = (OverworldParams*)params;
     PlaydateAPI* pd = worldParams->pd;
+    Camera* camera = &worldParams->camera;
+    pd->graphics->setDrawOffset(-camera->x, -camera->y);
     pd->graphics->clear(kColorWhite);
 
     pd->system->logToConsole("New Scene Overworld");
@@ -10,6 +12,10 @@ void overworldEnter(void* params) {
 }
 
 void overworldExit(void* params) {
+    OverworldParams* worldParams = (OverworldParams*)params;
+    PlaydateAPI* pd = worldParams->pd;
+    // Camera* camera = &worldParams->camera
+    pd->graphics->setDrawOffset(0, 0);
 }
 
 void updateCamera(Camera* camera, Player* player, World* world) {

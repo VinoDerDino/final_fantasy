@@ -2,16 +2,14 @@
 
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams) {
     
+    if(manager->OnSceneExit) {
+        manager->OnSceneExit(manager->params.data);
+    }
+
     manager->params.type = type;
     manager->params.data = sceneParams;
     
     switch (type) {
-        case MENU:
-            manager->OnSceneEnter = NULL;
-            manager->OnSceneExit = NULL;
-            manager->UpdateScene = NULL;
-            manager->DrawScene = NULL;
-            break;
         
         case OVERWORLD:
             manager->OnSceneEnter = overworldEnter;
@@ -34,11 +32,13 @@ void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams) {
             manager->DrawScene = battleDraw;
             break;
 
-        default:
+        case MENU:
             manager->OnSceneEnter = NULL;
             manager->OnSceneExit = NULL;
             manager->UpdateScene = NULL;
             manager->DrawScene = NULL;
+
+        default:
             break;
     }
 
