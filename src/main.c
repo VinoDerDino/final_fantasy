@@ -113,7 +113,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		o_params.camera.y = o_params.player->sprite.y;
 		o_params.camera.maxX = 20 * 32;
 		o_params.camera.maxY = 20 * 32;
-		o_params.select = newBitmap("images/select", pd);
+		o_params.select = newBitmap("images/select_img", pd);
 
 		b_params.pd = pd;
 		b_params.selectX = 0;

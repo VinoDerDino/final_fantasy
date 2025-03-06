@@ -146,6 +146,8 @@ void overworldUpdate(void* params, float dt) {
 
     if(check_info) {
         handle_info_overview(params, dt);
+        int tile_id = (int)((worldParams->selectX + 16) / 32) + (int)((worldParams->selectY + 16) / 32) * world->width;
+        drawHub(player, camera, world, tile_id, pd);
         return;
     }
 
