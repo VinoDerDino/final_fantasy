@@ -31,16 +31,12 @@ typedef enum {
 } Scenetypes;
 
 typedef struct {
-    Scenetypes type;
-    void* data;
-} SceneParams;
-
-typedef struct {
     void (*OnSceneEnter)(void* params);
     void (*OnSceneExit)(void* params);
     void (*UpdateScene)(void* params, float dt);
     void (*DrawScene)(void* params);
-    SceneParams params;
+    Scenetypes type;
+    void* data;
 } Scenemanager;
 
 struct World;

@@ -198,8 +198,9 @@ void overworldUpdate(void* params, float dt) {
             player->sprite.y = player->movement.targetY;
             player->movement.justFinished = 1;
             if(checkForFight(player, world)) {
-                BattleParams battleParams = {player, player, player, pd, 0, 0, newBitmapTable("images/select", pd), NULL};
-                changeScene(manager, BATTLE, &battleParams);
+                pd->system->logToConsole("Fight triggered!");
+                // BattleParams battleParams = {player, player, player, pd, 0, 0, newBitmapTable("images/select", pd), NULL};
+                // changeScene(manager, BATTLE, &battleParams);
             }
         }
     } else {

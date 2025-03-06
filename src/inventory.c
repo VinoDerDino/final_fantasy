@@ -1,4 +1,5 @@
 #include "inventory.h"
+#include "scenemanager.h"
 
 void invOnEnter(void* params) {
     InventoryParams* invParams = (InventoryParams*) params;

@@ -3,11 +3,11 @@
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams) {
     
     if(manager->OnSceneExit) {
-        manager->OnSceneExit(manager->params.data);
+        manager->OnSceneExit(manager->data);
     }
 
-    manager->params.type = type;
-    manager->params.data = sceneParams;
+    manager->type = type;
+    manager->data = sceneParams;
     
     switch (type) {
         
@@ -49,12 +49,12 @@ void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams) {
 
 void updateScene(Scenemanager manager, float dt, PlaydateAPI* pd) {
     if(manager.UpdateScene) {
-        manager.UpdateScene(manager.params.data, dt);
+        manager.UpdateScene(manager.data, dt);
     } 
 }
 
 void drawScene(Scenemanager manager, PlaydateAPI* pd) {
     if(manager.DrawScene) {
-        manager.DrawScene(manager.params.data);
+        manager.DrawScene(manager.data);
     }
 }

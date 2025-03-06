@@ -1,9 +1,10 @@
 #ifndef ITEM_H_
 #define ITEM_H_
 
+#include <stdint.h>
+
 #include "pd_api.h"
 #include "sprite.h"
-#include <stdint.h>
 
 #define MAX_ITEMS 100
 #define MAX_NAME_LEN 20
