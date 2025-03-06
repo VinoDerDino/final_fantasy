@@ -6,11 +6,6 @@ void invOnEnter(void* params) {
 
     pd->graphics->clear(kColorWhite);
     pd->system->logToConsole("New Scene Inventory");
-    
-    for(int i = 0; i < 4; i++) {
-        pd->graphics->drawRect(56, 14 + i * 50, 330, 30, kColorBlack);
-        pd->graphics->drawLine(150, 14 + i * 50, 150, 42 + i * 50, 1, kColorBlack);
-    }
 }
 
 void invOnExit(void* params) {
@@ -22,11 +17,21 @@ void invUpdate(void* params, float dt) {
     PlaydateAPI* pd = invParams->pd;
     Inventory* inv = invParams->inv;
 
-    float crankChange = pd->system->getCrankChange() * 0.1f;
+    float crankChange = pd->system->getCrankChange() * 0.15f;
+    PDButtons btn;
+    pd->system->getButtonState(NULL, &btn, NULL);
+
+    if(btn & kButtonUp) {
+        inv->curr_pos -= 1;
+        if(inv->curr_pos < 0) inv->curr_pos = 0;
+    } else if(btn  & kButtonDown) {
+        inv->curr_pos += 1;
+        if(inv->curr_pos >= inv->count) inv->curr_pos = inv->count - 1;
+    }
 
     if(crankChange != 0) {
         pd->system->logToConsole("Crank change: %f", crankChange);
-        inv->curr_pos += (int)crankChange;
+        inv->curr_pos += (int)round(crankChange);
         if(inv->curr_pos < 0) {
             inv->curr_pos = 0;
         } else if(inv->curr_pos >= inv->count) {
@@ -61,13 +66,18 @@ void invDraw(void* params) {
     Inventory* inv = invParams->inv;
 
     pd->graphics->clear(kColorWhite);
-    pd->graphics->drawRect(9, 3, 65, 65, kColorBlack); 
+    pd->graphics->drawRect(9, 3, 33, 33, kColorBlack); 
+
+    for(int i = 0; i < 4; i++) {
+        pd->graphics->drawRect(56, 13 + i * 50, 330, 30, kColorBlack);
+        pd->graphics->drawLine(150, 13 + i * 50, 150, 42 + i * 50, 1, kColorBlack);
+    }
 
     int visibleIndex = 0;
-    for(int i = (int)inv->curr_pos; i < (int)inv->curr_pos + 3 && i < inv->count; i++) { //7 statt 3
-        drawSprite(inv->items[i].icon, pd, 10, 3 + visibleIndex * 65, kBitmapUnflipped); //33 statt 65
+    for(int i = (int)inv->curr_pos; i < (int)inv->curr_pos + 7 && i < inv->count; i++) { //7 statt 3
+        drawSprite(inv->items[i].icon, pd, 10, 3 + visibleIndex * 33, kBitmapUnflipped); //33 statt 65
         visibleIndex++;
     }
 
-    // drawText(inv->items[(int)inv->curr_pos], pd);
+    drawText(inv->items[(int)inv->curr_pos], pd);
 } 
