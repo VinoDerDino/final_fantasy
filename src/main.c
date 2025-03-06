@@ -2,6 +2,8 @@
 
 #include "pd_api.h"
 
+#include <time.h>
+
 #include "menu.h"
 #include "jsonparser.h"
 #include "inventory.h"
@@ -14,20 +16,10 @@ static int update(void* userdata);
 PlaydateAPI *pd = NULL;
 Game game;
 World world;
-LCDFont* font = NULL;
-
-AnimatedSprite tree1;
-AnimatedSprite tree2;
-AnimatedSprite tree3;
-AnimatedSprite tree4;
 
 InventoryParams params;
 OverworldParams o_params;
 BattleParams b_params;
-
-AnimatedSprite player_idle;
-
-AudioSample* sample;
 
 #ifdef _WINDLL
 __declspec(dllexport)
@@ -35,22 +27,21 @@ __declspec(dllexport)
 
 void menuChangeScene(void *userdata) {
 	int type = (int)userdata;
-	switch (type)
-	{
-	case 1:
-		changeScene(&game.scenemanager, OVERWORLD, &o_params);
-		break;
-	
-	case 2:
-		changeScene(&game.scenemanager, INVENTORY, &params);
-		break;
+	switch (type){
+		case 1:
+			changeScene(&game.scenemanager, OVERWORLD, &o_params);
+			break;
+		
+		case 2:
+			changeScene(&game.scenemanager, INVENTORY, &params);
+			break;
 
-	case 3:
-		changeScene(&game.scenemanager, BATTLE, &b_params);
-		break;
+		case 3:
+			changeScene(&game.scenemanager, BATTLE, &b_params);
+			break;
 
-	default:
-		break;
+		default:
+			break;
 	}
 }
 
@@ -58,6 +49,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
     (void)arg;
     
 	if (event == kEventInit) {
+		srand(time(NULL));
 		pd = playdate;
 		pd->display->setRefreshRate(0);
 		game.itemtable = newBitmapTable("images/monsters", pd); 
@@ -70,26 +62,14 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		pd->graphics->getBitmapTableInfo(game.chars[0].sprite.table, &count, &cellswide);
 		pd->system->logToConsole("INFO count: %d, cellswide: %d", count, cellswide);
 
-		game.chars[0].inventory.items[0] = game.itemlist.items[0];
-		game.chars[0].inventory.items[1] = game.itemlist.items[1];
-		game.chars[0].inventory.items[2] = game.itemlist.items[2];
-		game.chars[0].inventory.items[3] = game.itemlist.items[3];
-		game.chars[0].inventory.items[4] = game.itemlist.items[4];
-		game.chars[0].inventory.items[5] = game.itemlist.items[5];
-		game.chars[0].inventory.items[6] = game.itemlist.items[6];
-		game.chars[0].inventory.items[7] = game.itemlist.items[7];
-		game.chars[0].inventory.items[8] = game.itemlist.items[8];
-		game.chars[0].inventory.items[9] = game.itemlist.items[9];
-		game.chars[0].inventory.items[10] = game.itemlist.items[10];
-		game.chars[0].inventory.items[11] = game.itemlist.items[11];
-		game.chars[0].inventory.items[12] = game.itemlist.items[12];
-		game.chars[0].inventory.items[13] = game.itemlist.items[13];
-		game.chars[0].inventory.items[14] = game.itemlist.items[14];
-		game.chars[0].inventory.items[15] = game.itemlist.items[15];
+		for(int i = 0; i < 16; i++) {
+			game.chars[0].inventory.items[i] = game.itemlist.items[i];
+		}
 
 		game.chars[0].inventory.count = 16;
 		game.chars[0].inventory.curr_pos = 0;
 		game.chars[0].movement = (PlayerMovement){0};
+		game.chars[0].dir = 0;
 
 		game.lastFrameTime = 0;
 
@@ -122,11 +102,6 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		b_params.monsters = game.itemtable;
 
 		changeScene(&game.scenemanager, OVERWORLD, &o_params);
-
-		tree1 = newAnimatedSprite("images/tree-table-32-32", pd, 0, 0, 4, 0.25);
-		tree2 = newAnimatedSprite("images/tree-table-32-32", pd, 32, 0, 4, 0.25);
-		tree3 = newAnimatedSprite("images/tree-table-32-32", pd, 0, 32, 4, 0.25);
-		tree4 = newAnimatedSprite("images/tree-table-32-32", pd, 32, 32, 4, 0.25);
 
 		pd->system->addMenuItem("Overworld", menuChangeScene, (void*)1);
 		pd->system->addMenuItem("Inventory", menuChangeScene, (void*)2);
