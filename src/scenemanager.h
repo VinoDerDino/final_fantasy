@@ -2,7 +2,6 @@
 #define SCENEMANAGER_H_
 
 #include <stdbool.h>
-#include <stddef.h>
 
 #include "pd_api.h"
 #include "player.h"

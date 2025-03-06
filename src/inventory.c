@@ -31,7 +31,7 @@ void invUpdate(void* params, float dt) {
     }
 
     if(crankChange != 0) {
-        pd->system->logToConsole("Crank change: %f", crankChange);
+        pd->system->logToConsole("Crank change: %.2f", (double)crankChange);
         inv->curr_pos += (int)round(crankChange);
         if(inv->curr_pos < 0) {
             inv->curr_pos = 0;
@@ -46,20 +46,28 @@ void invUpdate(void* params, float dt) {
 }
 
 void drawText(Item item, PlaydateAPI* pd) {
-    char attackStr[10], critChanceStr[10], valueStr[10];
-    snprintf(attackStr, sizeof(attackStr), "%d", item.attack);
-    snprintf(critChanceStr, sizeof(critChanceStr), "%d", item.crit_chance);
-    snprintf(valueStr, sizeof(valueStr), "%d", item.value);
+    char *attackStr = NULL;
+    char *critChanceStr = NULL;
+    char *valueStr = NULL;
+
+    int att_len = pd->system->formatString(&attackStr, "%d", item.attack);
+    int crit_len = pd->system->formatString(&critChanceStr, "%d", item.crit_chance);
+    int val_len = pd->system->formatString(&valueStr, "%d", item.value);
 
     pd->graphics->drawText("Name", strlen("Name"), kASCIIEncoding, 60, 20);
     pd->graphics->drawText(item.name, strlen(item.name), kASCIIEncoding, 160, 20);
     pd->graphics->drawText("Attack", strlen("Attack"), kASCIIEncoding, 60, 70);
-    pd->graphics->drawText(attackStr, strlen(attackStr), kASCIIEncoding, 160, 70);
+    pd->graphics->drawText(attackStr, att_len, kASCIIEncoding, 160, 70);
     pd->graphics->drawText("Crit chance", strlen("Crit chance"), kASCIIEncoding, 60, 120);
-    pd->graphics->drawText(critChanceStr, strlen(critChanceStr), kASCIIEncoding, 160, 120);
+    pd->graphics->drawText(critChanceStr, crit_len, kASCIIEncoding, 160, 120);
     pd->graphics->drawText("Value", strlen("Value"), kASCIIEncoding, 60, 170);
-    pd->graphics->drawText(valueStr, strlen(valueStr), kASCIIEncoding, 160, 170);
+    pd->graphics->drawText(valueStr, val_len, kASCIIEncoding, 160, 170);
+
+    pd->system->realloc(attackStr, 0);
+    pd->system->realloc(critChanceStr, 0);
+    pd->system->realloc(valueStr, 0);
 }
+
 
 void invDraw(void* params) {
     InventoryParams* invParams = (InventoryParams*) params;

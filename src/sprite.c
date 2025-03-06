@@ -54,18 +54,10 @@ Sprite newSpriteFromTable(LCDBitmapTable* table, int idx, PlaydateAPI *pd, int x
     return s;
 }
 
-AnimatedSprite newAnimatedSprite(const char *path, PlaydateAPI *pd, int x, int y, int frameCount, float frameDelay) {
-    char buff[100];
-    int width = 0, height = 0;
-    
-    if(sscanf(path, "%99[^-]-table-%d-%d", buff, &width, &height) != 3) {
-        pd->system->logToConsole("Error parsing path: %s", path);
-        return (AnimatedSprite){0};
-    }
-
-    LCDBitmapTable *bmt = newBitmapTable(buff, pd);
+AnimatedSprite newAnimatedSprite(const char *path, PlaydateAPI *pd, int x, int y, int width, int height, int frameCount, float frameDelay) {
+    LCDBitmapTable *bmt = newBitmapTable(path, pd);
     if (bmt == NULL) {
-        pd->system->logToConsole("Error: could not create BitmapTable for path: %s", buff);
+        pd->system->logToConsole("Error: could not create BitmapTable for path: %s", path);
         return (AnimatedSprite){0};
     }
     

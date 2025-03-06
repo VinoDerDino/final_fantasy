@@ -2,7 +2,6 @@
 
 #include "pd_api.h"
 
-#include <time.h>
 #include <stdint.h>
 
 #include "jsonparser.h"
@@ -50,14 +49,14 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
     (void)arg;
     
 	if (event == kEventInit) {
-		srand((unsigned int)time(NULL));
 		pd = playdate;
+		srand(pd->system->getCurrentTimeMilliseconds());
 		pd->display->setRefreshRate(0);
 		game.itemtable = newBitmapTable("images/monsters", pd); 
 		game.tiletable = newBitmapTable("images/grassybig", pd);
 		decodeItems("jsons/test.json", &game.itemlist);
 
-		game.chars[0].sprite = newAnimatedSprite("images/playeridle-table-32-32", pd, 0, 0, 4, 0.25);
+		game.chars[0].sprite = newAnimatedSprite("images/playeridle", pd, 0, 0, 32, 32, 4, 0.25);
 
 		int count, cellswide;
 		pd->graphics->getBitmapTableInfo(game.chars[0].sprite.table, &count, &cellswide);
