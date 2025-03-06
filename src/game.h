@@ -7,14 +7,15 @@
 #include "inventory.h"
 #include "scenemanager.h"
 
+struct World;
+
 typedef struct {
     Player chars[3];
-    Scenemanager scenemanager;
     ItemList itemlist;
     LCDBitmapTable* itemtable;
     LCDBitmapTable* tiletable;
     float lastFrameTime;
-    World world;
+    struct World* world;
 } Game;
 
 #endif

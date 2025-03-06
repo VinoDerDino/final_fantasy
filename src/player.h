@@ -23,6 +23,7 @@ typedef struct {
     int health;
     int maxHealth;
     int power;
+    int dir;
     Inventory inventory; 
     AnimatedSprite sprite;
     PlayerMovement movement;
@@ -33,11 +34,9 @@ typedef struct {
     int current_index;
 } PlayerList;
 
-
 typedef struct {
     Player chars[TOTAL_PLAYER_COUNT];
     int current_index;
 } PlayerPreviewList;
-
 
 #endif

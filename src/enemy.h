@@ -24,11 +24,9 @@ typedef struct {
     Attack* attacks;
 } Enemy;
 
-
 extern Enemy enemies[];
 
 int dealDamage(Enemy e);
 void recieveDamage(Enemy* e, int dmg);
-
 
 #endif

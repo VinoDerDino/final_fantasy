@@ -3,8 +3,8 @@
 #include "pd_api.h"
 
 #include <time.h>
+#include <stdint.h>
 
-#include "menu.h"
 #include "jsonparser.h"
 #include "inventory.h"
 #include "game.h"
@@ -16,6 +16,7 @@ static int update(void* userdata);
 PlaydateAPI *pd = NULL;
 Game game;
 World world;
+Scenemanager manager;
 
 InventoryParams params;
 OverworldParams o_params;
@@ -26,18 +27,18 @@ __declspec(dllexport)
 #endif
 
 void menuChangeScene(void *userdata) {
-	int type = (int)userdata;
+	intptr_t type = (intptr_t)userdata;
 	switch (type){
 		case 1:
-			changeScene(&game.scenemanager, OVERWORLD, &o_params);
+			changeScene(&manager, OVERWORLD, &o_params);
 			break;
 		
 		case 2:
-			changeScene(&game.scenemanager, INVENTORY, &params);
+			changeScene(&manager, INVENTORY, &params);
 			break;
 
 		case 3:
-			changeScene(&game.scenemanager, BATTLE, &b_params);
+			changeScene(&manager, BATTLE, &b_params);
 			break;
 
 		default:
@@ -49,7 +50,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
     (void)arg;
     
 	if (event == kEventInit) {
-		srand(time(NULL));
+		srand((unsigned int)time(NULL));
 		pd = playdate;
 		pd->display->setRefreshRate(0);
 		game.itemtable = newBitmapTable("images/monsters", pd); 
@@ -101,7 +102,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		b_params.select = newBitmapTable("images/select", pd);
 		b_params.monsters = game.itemtable;
 
-		changeScene(&game.scenemanager, OVERWORLD, &o_params);
+		changeScene(&manager, OVERWORLD, &o_params);
 
 		pd->system->addMenuItem("Overworld", menuChangeScene, (void*)1);
 		pd->system->addMenuItem("Inventory", menuChangeScene, (void*)2);
@@ -119,7 +120,7 @@ static int update(void* userdata) {
 	float dt = currTime - game.lastFrameTime;
 	game.lastFrameTime = currTime;
 
-	updateScene(game.scenemanager, dt, pd);
+	updateScene(manager, dt, pd);
 	pd->system->drawFPS(0, 230);
 
     return 1;
