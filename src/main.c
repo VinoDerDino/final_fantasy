@@ -70,6 +70,8 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[0].inventory.curr_pos = 0;
 		game.chars[0].movement = (PlayerMovement){0};
 		game.chars[0].dir = 0;
+		game.chars[0].fight_x = 1;
+		game.chars[0].fight_y = 1;
 
 		game.lastFrameTime = 0;
 
@@ -88,6 +90,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		
 		o_params.pd = pd;
 		o_params.world = &world;
+		o_params.manager = &manager;
 		o_params.player = &game.chars[0];
 		o_params.camera.x = o_params.player->sprite.x;
 		o_params.camera.y = o_params.player->sprite.y;
@@ -95,17 +98,23 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		o_params.camera.maxY = 20 * 32;
 		o_params.select = newBitmap("images/select_img", pd);
 
+		b_params.chars[0] = &game.chars[0];
+		b_params.chars[1] = NULL;
+		b_params.chars[2] = NULL;
 		b_params.pd = pd;
 		b_params.selectX = 0;
 		b_params.selectY = 0;
 		b_params.select = newBitmapTable("images/select", pd);
-		b_params.monsters = game.itemtable;
+		b_params.monsters = newBitmapTable("images/monsters", pd);
+		b_params.state = PLAYER_TURN;
+
+		manager.pendingSceneChange = PENDING;
 
 		changeScene(&manager, OVERWORLD, &o_params);
 
 		pd->system->addMenuItem("Overworld", menuChangeScene, (void*)1);
 		pd->system->addMenuItem("Inventory", menuChangeScene, (void*)2);
-		pd->system->addMenuItem("Fight", menuChangeScene, (void*)3);
+		pd->system->addMenuItem("Battle", menuChangeScene, (void*)3);
 
         pd->system->setUpdateCallback(update, pd);
     } 
@@ -119,7 +128,7 @@ static int update(void* userdata) {
 	float dt = currTime - game.lastFrameTime;
 	game.lastFrameTime = currTime;
 
-	updateScene(manager, dt, pd);
+	updateScene(&manager, dt, pd);
 	pd->system->drawFPS(0, 230);
 
     return 1;

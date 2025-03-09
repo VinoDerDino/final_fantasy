@@ -199,8 +199,21 @@ void overworldUpdate(void* params, float dt) {
             player->movement.justFinished = 1;
             if(checkForFight(player, world)) {
                 pd->system->logToConsole("Fight triggered!");
-                // BattleParams battleParams = {player, player, player, pd, 0, 0, newBitmapTable("images/select", pd), NULL};
-                // changeScene(manager, BATTLE, &battleParams);
+                BattleParams* battleParams = (BattleParams*)malloc(sizeof(BattleParams));
+                if (battleParams != NULL) {
+                    battleParams->chars[0] = player;
+                    battleParams->chars[1] = player;
+                    battleParams->chars[2] = player;
+                    battleParams->pd = pd;
+                    battleParams->selectX = 0;
+                    battleParams->selectY = 0;
+                    battleParams->select = newBitmapTable("images/select", pd);
+                    battleParams->monsters = newBitmapTable("images/monsters", pd);
+                    manager->pendingData = battleParams;
+                    manager->pendingSceneChange = BATTLE;
+                } else {
+                    pd->system->logToConsole("Error: Could not allocate memory for BattleParams");
+                }
             }
         }
     } else {

@@ -47,14 +47,19 @@ void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams) {
     }
 }
 
-void updateScene(Scenemanager manager, float dt, PlaydateAPI* pd) {
-    if(manager.UpdateScene) {
-        manager.UpdateScene(manager.data, dt);
+void updateScene(Scenemanager* manager, float dt, PlaydateAPI* pd) {
+    if(manager->pendingSceneChange != PENDING) {
+        changeScene(manager, manager->pendingSceneChange, manager->pendingData);
+        free(manager->pendingData);
+        manager->pendingSceneChange = PENDING;
+    }
+    if(manager->UpdateScene) {
+        manager->UpdateScene(manager->data, dt);
     } 
 }
 
-void drawScene(Scenemanager manager, PlaydateAPI* pd) {
-    if(manager.DrawScene) {
-        manager.DrawScene(manager.data);
+void drawScene(Scenemanager* manager, PlaydateAPI* pd) {
+    if(manager->DrawScene) {
+        manager->DrawScene(manager->data);
     }
 }

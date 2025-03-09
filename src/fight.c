@@ -7,7 +7,6 @@ void battleOnEnter(void *params) {
 
     
     pd->graphics->clear(kColorWhite);
-    pd->system->logToConsole("New Scene Fight");
 
     int start_x = 14, start_y = 110;
 
@@ -41,6 +40,21 @@ void battleUpdate(void* params, float dt) {
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
+    if(btn_pressed & kButtonA) {
+        if(battleParams->state == PLAYER_TURN) {
+            for(int i = 0; i < 3; i++) {
+                Player* p = battleParams->chars[i];
+                if(p != NULL && p->fight_x == battleParams->selectX && p->fight_y == battleParams->selectY) {
+                    battleParams->state = PLAYER_MOVE;
+                    battleParams->selectP = i;
+                    pd->system->logToConsole("Player %d: x = %d, y = %d; Select x = %d, y = %d", i, p->fight_x, p->fight_y, battleParams->selectX, battleParams->selectY);
+                }
+            }
+        } else if(battleParams->state == PLAYER_MOVE) {
+            battleParams->state = PLAYER_TURN;
+        }
+    }
+
     int dx = 0, dy = 0;
     if (btn_pressed & kButtonLeft)      dx = -1;
     else if (btn_pressed & kButtonRight)  dx = 1;
@@ -48,8 +62,15 @@ void battleUpdate(void* params, float dt) {
     else if (btn_pressed & kButtonDown)   dy = -1;
     
     if (dx || dy) {
-        battleParams->selectX = (battleParams->selectX + dx + 5) % 5;
-        battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
+        if(battleParams->state == PLAYER_MOVE) {        
+            battleParams->selectX = (battleParams->selectX + dx + 3) % 3;
+            battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
+            battleParams->chars[battleParams->selectP]->fight_x = battleParams->selectX;
+            battleParams->chars[battleParams->selectP]->fight_y = battleParams->selectY;
+        } else {
+            battleParams->selectX = (battleParams->selectX + dx + 5) % 5;
+            battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
+        }
     } 
 
     battleDraw(params);
@@ -78,5 +99,20 @@ void battleDraw(void* params) {
 
     if(battleParams->selectX == 3) {
         pd->graphics->drawText(enemies[0].name, strlen(enemies[0].name), kASCIIEncoding, 50, 220);
+    }
+
+    for(int i = 0; i < 3; i++) {
+        if(battleParams->chars[i] != NULL) {
+            selectX = 14 + battleParams->chars[i]->fight_x * 48 + battleParams->chars[i]->fight_y * 12 + offset;
+            selectY = 110 - battleParams->chars[i]->fight_y * 42 + offset;
+            drawAnimatedSprite(&battleParams->chars[i]->sprite, pd, selectX, selectY, kBitmapUnflipped, 0.0);
+        }
+    }
+
+    if(battleParams->state == PLAYER_TURN) {
+        pd->graphics->drawRect(20, 150, 255, 30, kColorBlack);
+        pd->graphics->drawRect(20, 190, 255, 30, kColorBlack);
+        pd->graphics->drawRect(170, 150, 255, 30, kColorBlack); 
+        pd->graphics->drawRect(170, 190, 255, 30, kColorBlack);
     }
 }

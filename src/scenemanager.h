@@ -23,6 +23,13 @@ void battleUpdate(void* params, float dt);
 void battleDraw(void* params);
 
 typedef enum {
+    PLAYER_TURN,
+    PLAYER_MOVE,
+    ENEMY_TURN,
+} BattleStates;
+
+typedef enum {
+    PENDING = -1,
     MENU,
     OVERWORLD,
     INVENTORY,
@@ -35,6 +42,8 @@ typedef struct {
     void (*UpdateScene)(void* params, float dt);
     void (*DrawScene)(void* params);
     Scenetypes type;
+    Scenetypes pendingSceneChange;
+    void* pendingData;
     void* data;
 } Scenemanager;
 
@@ -61,13 +70,14 @@ typedef struct {
 typedef struct {
     Player* chars[3];
     PlaydateAPI* pd;
-    int selectX, selectY;
+    int selectX, selectY, selectP;
     LCDBitmapTable* select;
     LCDBitmapTable* monsters;
+    BattleStates state;
 } BattleParams;
 
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams);
-void updateScene(Scenemanager manager, float dt, PlaydateAPI* pd);
-void drawScene(Scenemanager manager, PlaydateAPI* pd);
+void updateScene(Scenemanager* manager, float dt, PlaydateAPI* pd);
+void drawScene(Scenemanager* manager, PlaydateAPI* pd);
 
 #endif
