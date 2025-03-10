@@ -23,6 +23,7 @@ void battleUpdate(void* params, float dt);
 void battleDraw(void* params);
 
 typedef enum {
+    PLAYER_TURN_INIT,
     PLAYER_TURN,
     PLAYER_MOVE,
     ENEMY_TURN,
@@ -70,7 +71,7 @@ typedef struct {
 typedef struct {
     Player* chars[3];
     PlaydateAPI* pd;
-    int selectX, selectY, selectP;
+    int selectX, selectY, selectP, activeP;
     LCDBitmapTable* select;
     LCDBitmapTable* monsters;
     BattleStates state;
