@@ -1,9 +1,8 @@
 #include "overworld.h"
-#include <string.h> // Für strlen
+#include <string.h>
 
 #define TILE_SIZE 32
 
-// Hilfsfunktion zum Clampen eines Wertes zwischen min und max
 static inline int clamp(int value, int min, int max) {
     return (value < min) ? min : (value > max ? max : value);
 }
@@ -58,7 +57,6 @@ void drawMap(Camera* camera, const World* world, PlaydateAPI* pd) {
     int endCol = (camera->x + SCREEN_WIDTH) / TILE_SIZE;
     int endRow = (camera->y + 224) / TILE_SIZE;
     
-    // Bereichsprüfung für Zeilen und Spalten
     if (startCol < 0) startCol = 0;
     if (startRow < 0) startRow = 0;
     if (endCol >= world->width)  endCol = world->width - 1;
@@ -95,7 +93,6 @@ void processPlayerInput(Player* player, const World* world, PlaydateAPI* pd, PDB
 
     int new_x = player->sprite.x + dx;
     int new_y = player->sprite.y + dy;
-    // Überprüfung, ob die neue Position innerhalb der Welt liegt
     if (new_x < 0 || new_y < 0 || new_x > (world->width - 1) * TILE_SIZE || new_y > (world->height - 1) * TILE_SIZE) {
         return;
     }
@@ -132,7 +129,6 @@ void handleInfoOverview(void* params, float dt) {
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
-    // Wechsel zurück zur normalen Ansicht, wenn A gedrückt wird
     if (btn_pressed & kButtonA) {
         worldParams->check_info = false;
         pd->system->logToConsole("Switched back to normal view");
@@ -184,7 +180,6 @@ void overworldUpdate(void* params, float dt) {
         return;
     }
 
-    // Spielerbewegung aktualisieren
     if (player->movement.isMoving) {
         player->movement.elapsedTime += dt;
         float t = player->movement.elapsedTime / MOVE_DURATION;
