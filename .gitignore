@@ -1,5 +1,6 @@
 *.zip
 .vs
+.clang-format
 build-dev/
 build-sim/
 hello_world.pdx/
