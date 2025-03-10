@@ -8,7 +8,7 @@ void drawSprite(Sprite sprite, PlaydateAPI *pd, int offset_x, int offset_y, LCDB
     pd->graphics->drawBitmap(sprite.bm, sprite.x + offset_x, sprite.y + offset_y, flip);
 }
 
-void drawAnimatedSprite(AnimatedSprite* sprite, PlaydateAPI* pd, int offset_x, int offset_y, LCDBitmapFlip flip, float dt) {
+void drawAnimatedSprite(AnimatedSprite* sprite, PlaydateAPI* pd, int offset_x, int offset_y, bool offsetAsPos, LCDBitmapFlip flip, float dt) {
     if (sprite == NULL) {
         pd->system->logToConsole("Error: Invalid AnimatedSprite");
         return;
@@ -31,7 +31,11 @@ void drawAnimatedSprite(AnimatedSprite* sprite, PlaydateAPI* pd, int offset_x, i
         return;
     }
 
-    pd->graphics->drawBitmap(bm, sprite->x + offset_x, sprite->y + offset_y, flip);
+    if(offsetAsPos) {
+        pd->graphics->drawBitmap(bm, offset_x, offset_y, flip);
+    }else {
+        pd->graphics->drawBitmap(bm, sprite->x + offset_x, sprite->y + offset_y, flip);
+    }
 }
 
 Sprite newSprite(const char *path, PlaydateAPI *pd, int x, int y) {

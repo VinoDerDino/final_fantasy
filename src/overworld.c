@@ -49,7 +49,7 @@ void drawTileInd(const World* world, int tileIndex, PlaydateAPI* pd, bool clear)
 }
 
 void drawPlayer(Player* player, PlaydateAPI* pd, float dt) {
-    drawAnimatedSprite(&player->sprite, pd, 0, 0, player->dir, dt);
+    drawAnimatedSprite(&player->sprite, pd, 0, 0, false, player->dir, dt);
 }
 
 void drawMap(Camera* camera, const World* world, PlaydateAPI* pd) {

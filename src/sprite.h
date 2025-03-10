@@ -4,6 +4,7 @@
 #define TARGET_EXTENSION 1
 
 #include "pd_api.h"
+#include <stdbool.h>
 
 typedef struct Sprite_S {
     int x;
@@ -22,7 +23,7 @@ typedef struct AnimatedSprite_S {
 } AnimatedSprite;
 
 void drawSprite(Sprite sprite, PlaydateAPI *pd, int offset_x, int offset_y, LCDBitmapFlip flip);
-void drawAnimatedSprite(AnimatedSprite* sprite, PlaydateAPI* pd, int offset_x, int offset_y, LCDBitmapFlip flip, float dt);
+void drawAnimatedSprite(AnimatedSprite* sprite, PlaydateAPI* pd, int offset_x, int offset_y, bool offsetAsPos, LCDBitmapFlip flip, float dt);
 
 LCDBitmap* newBitmap(const char *path, PlaydateAPI *pd);
 LCDBitmapTable* newBitmapTable(const char* path, PlaydateAPI *pd); 
