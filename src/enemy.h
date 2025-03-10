@@ -5,13 +5,13 @@ typedef enum {
     STANDARD,
     FIRE,
     POISON
-} AttackType;
+} AttackTypeEnemy;
 
 typedef struct {
     const char *name;
     int size_col, size_row;
-    AttackType type;
-} Attack;
+    AttackTypeEnemy type;
+} AttackEnemy;
 
 typedef struct {
     const char* name;
@@ -21,7 +21,7 @@ typedef struct {
     int resistence;
     int lvl;
     int attackCount;
-    Attack* attacks;
+    AttackEnemy* attacks;
 } Enemy;
 
 extern Enemy enemies[];
