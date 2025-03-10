@@ -10,7 +10,7 @@ bool drawAttackButtonAnimation(void* params, float dt) {
 
     for(int i = 0; i < 4; i++) {
         pd->graphics->drawRect(player->attacks[i].rect_x, (int)(player->attacks[i].rect_y), 125, 30, kColorBlack);
-        pd->graphics->drawText(player->attacks[i].name, strlen(player->attacks[i].name), kASCIIEncoding, player->attacks[i].rect_x + 5, player->attacks[i].rect_y + 7);
+        pd->graphics->drawText(player->attacks[i].name, strlen(player->attacks[i].name), kASCIIEncoding, player->attacks[i].rect_x + 5, (int)(player->attacks[i].rect_y + 7));
 
         if((int)(player->attacks[i].rect_y) > player->attacks[i].dest_y) {
             finished = false;
@@ -62,14 +62,55 @@ void handlePlayerTurn(BattleParams* battleParams) {
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
-    if(btn_pressed & kButtonA) {
-        for(int i = 0; i < 3; i++) {
+    if (btn_pressed & kButtonA) {
+        for (int i = 0; i < 3; i++) {
             Player* p = battleParams->chars[i];
-            if(p != NULL && p->fight_x == battleParams->selectX && p->fight_y == battleParams->selectY) {
+            if (p != NULL && p->fight_x == battleParams->selectX && p->fight_y == battleParams->selectY) {
                 battleParams->state = PLAYER_MOVE;
                 battleParams->selectP = i;
+                return;
             }
         }
+    }
+
+    int dx = 0, dy = 0;
+    if (btn_pressed & kButtonLeft) {
+        dx = (battleParams->selectY < 3) ? -1 : (battleParams->selectX >= 3 ? -2 : -3);
+    } else if (btn_pressed & kButtonRight) {
+        dx = (battleParams->selectY < 3) ? 1 : ((battleParams->selectX == 1 || battleParams->selectX == 2) ? 2 : 3);
+    } else if (btn_pressed & kButtonUp) {
+        dy = 1;
+    } else if (btn_pressed & kButtonDown) {
+        dy = -1;
+    }
+
+    if (dx || dy) {
+        battleParams->selectX = (battleParams->selectX + dx + 5) % 5;
+        battleParams->selectY = (battleParams->selectY + dy + 5) % 5;
+    }
+
+    int offset = (GRID_CELL_SIZE - 32) / 2;
+    int selectX, selectY;
+
+    if (battleParams->selectY > 2) {
+        selectX = (battleParams->selectX < 3) ? 20 : 255;
+        selectY = (battleParams->selectY == 3) ? 200 : 160;
+    } else {
+        if (battleParams->selectX < 3) {
+            selectX = 14 + battleParams->selectX * 48 + battleParams->selectY * 12 + offset;
+            selectY = 110 - battleParams->selectY * 42 + offset;
+        } else {
+            int rightCol = battleParams->selectX - 3;
+            selectX = 302 + rightCol * 48 - battleParams->selectY * 12 + offset;
+            selectY = 110 - battleParams->selectY * 42 + offset;
+        }
+    }
+
+    LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 1);
+    pd->graphics->drawBitmap(s, selectX, selectY, kBitmapUnflipped);
+
+    if (battleParams->selectX == 3) {
+        pd->graphics->drawText(enemies[0].name, strlen(enemies[0].name), kASCIIEncoding, 50, 220);
     }
 }
 
@@ -152,26 +193,6 @@ void battleDraw(void* params) {
             }
         }
     }  
-
-    int offset = (GRID_CELL_SIZE - 32) / 2;
-    int selectX, selectY;
-    
-    if (battleParams->selectX < 3) {
-        selectX = 14 + battleParams->selectX * 48 + battleParams->selectY * 12 + offset;
-        selectY = 110 - battleParams->selectY * 42 + offset;
-    } else {
-        int rightCol = battleParams->selectX - 3;
-        selectX = 302 + rightCol * 48 - battleParams->selectY * 12 + offset;
-        selectY = 110 - battleParams->selectY * 42 + offset;
-    }
-
-    LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 1);
-    pd->graphics->drawBitmap(s, selectX, selectY, kBitmapUnflipped);
-
-    if(battleParams->selectX == 3) {
-        pd->graphics->drawText(enemies[0].name, strlen(enemies[0].name), kASCIIEncoding, 50, 220);
-    }
-
     
     Player* player = battleParams->chars[battleParams->activeP];
 
