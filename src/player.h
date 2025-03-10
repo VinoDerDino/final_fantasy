@@ -10,6 +10,29 @@
 #define TOTAL_PLAYER_COUNT 10
 #define MOVE_DURATION 0.2f
 
+typedef enum {
+    SINGLE_TARGET,
+    ROW,
+    COLUMN,
+    AREA,
+} AttackPattern;
+
+typedef enum {
+    BASIC_ATTACK,
+    FIRE_ATTACK,
+    WATER_ATTACK,
+    GROUND_ATTACK,
+} AttackType;
+
+typedef struct {
+    const char* name;
+    int dmg;
+    int rect_x, dest_y;
+    float rect_y;
+    AttackType type;
+    AttackPattern pattern;
+} Attack;
+
 typedef struct {
     int startX, startY;
     int targetX, targetY;
@@ -29,6 +52,7 @@ typedef struct {
     Inventory inventory; 
     AnimatedSprite sprite;
     PlayerMovement movement;
+    Attack attacks[4];
 } Player;
 
 typedef struct {

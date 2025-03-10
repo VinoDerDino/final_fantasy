@@ -72,6 +72,22 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[0].dir = 0;
 		game.chars[0].fight_x = 1;
 		game.chars[0].fight_y = 1;
+		game.chars[0].attacks[0].name = "BASIC";
+		game.chars[0].attacks[0].dmg = 5;
+		game.chars[0].attacks[0].type = BASIC_ATTACK;
+		game.chars[0].attacks[0].pattern = SINGLE_TARGET;
+		game.chars[0].attacks[1].name = "2";
+		game.chars[0].attacks[1].dmg = 5;
+		game.chars[0].attacks[1].type = BASIC_ATTACK;
+		game.chars[0].attacks[1].pattern = SINGLE_TARGET;
+		game.chars[0].attacks[2].name = "3";
+		game.chars[0].attacks[2].dmg = 5;
+		game.chars[0].attacks[2].type = BASIC_ATTACK;
+		game.chars[0].attacks[2].pattern = SINGLE_TARGET;
+		game.chars[0].attacks[3].name = "4";
+		game.chars[0].attacks[3].dmg = 5;
+		game.chars[0].attacks[3].type = BASIC_ATTACK;
+		game.chars[0].attacks[3].pattern = SINGLE_TARGET;
 
 		game.lastFrameTime = 0;
 
