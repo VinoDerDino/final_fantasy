@@ -1,6 +1,8 @@
 #ifndef ENEMY_H_
 #define ENEMY_H_
 
+#include "sprite.h"
+
 typedef enum {
     STANDARD,
     FIRE,
@@ -15,6 +17,7 @@ typedef struct {
 
 typedef struct {
     const char* name;
+    int id;
     int hp;
     int attack;
     int defense;
