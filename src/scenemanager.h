@@ -25,12 +25,17 @@ void battleDraw(void* params);
 
 typedef enum {
     PLAYER_TURN_INIT,
-    FIGHT_LOOP,
-    PLAYER_TURN,
+    PLAYER_MENU,
+    PLAYER_MENU_EXIT,
+    PLAYER_SELECT_INFO,
+    PLAYER_ATTACK_SELECTION_ANIMATION,
+    PLAYER_ATTACK_SELECTION,
     PLAYER_MOVE,
-    PLAYER_SELECT_P,
-    PLAYER_SELECT_E,
+    PLAYER_SELECT_PLAYER,
+    FIGHT_LOOP,
+    PLAYER_SELECT_ENEMY,
     ENEMY_TURN,
+    BATTLE_ESCAPE
 } BattleStates;
 
 typedef enum {
@@ -77,13 +82,15 @@ typedef struct {
     PlaydateAPI* pd;
     LCDBitmapTable* select;
     LCDBitmapTable* monsters;
-    int selectX, selectY, selectP, activeP;
+    int selectX, selectY, selectP, activeP, menuIndex;
     int countMonsters;
     Enemy enemies[3];
     int sequence[6];
     int currSequencePos;
     BattleStates state;
     float passed_time;
+    bool exit_menu;
+    float menu_offset;
 } BattleParams;
 
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams);

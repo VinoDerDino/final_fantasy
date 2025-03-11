@@ -141,7 +141,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		b_params.selectY = 0;
 		b_params.select = newBitmapTable("images/select", pd);
 		b_params.monsters = newBitmapTable("images/monsters", pd);
-		b_params.state = PLAYER_TURN;
+		b_params.state = PLAYER_MENU;
 		b_params.countMonsters = 3;
 		b_params.enemies[0] = enemies[0];
 		b_params.enemies[1] = enemies[1];

@@ -30,7 +30,7 @@ bool drawAttackButtonAnimation(void* params, float dt) {
     Player* player = battleParams->chars[battleParams->activeP];
 
     bool finished = true;
-    const float speed = 100.0f;
+    const float speed = 150.0f;
 
     for (int i = 0; i < 4; i++) {
         pd->graphics->fillRect(player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
@@ -125,6 +125,21 @@ void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd) {
     }
 }
 
+void drawPlayerMenu(BattleParams* battleParams, PlaydateAPI* pd) {
+    const char* options[4] = {"Show Infos", "Attack", "Escape", "Move Player"};
+
+    for (int i = 0; i < 4; i++) {
+        int x = (i % 2) ? 255 : 20;
+        int y = (i / 2) ? 200 : 160;
+        pd->graphics->drawRect(x, y, 125, 30, kColorBlack);
+        pd->graphics->drawText(options[i], strlen(options[i]), kASCIIEncoding, x + 5, y + 7);
+        if(i == battleParams->menuIndex) {
+            pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
+        }
+    }
+}
+
+
 static void shuffleSequence(int* sequence, int count) {
     for (int i = count - 1; i > 0; i--) {
         int j = rand() % (i + 1);
@@ -152,7 +167,7 @@ void battleOnEnter(void *params) {
             int dest_x = (j % 2) ? 255 : 20;
             int dest_y = (j / 2) ? 200 : 160;
             if (i == battleParams->activeP) {
-                player->attacks[j].rect_y = (float)(dest_y + 50 + 25 * j);
+                player->attacks[j].rect_y = (float)(dest_y + 80 + 25 * j);
                 player->attacks[j].dest_y = dest_y;
             } else {
                 player->attacks[j].rect_y = (float)(dest_y);
@@ -179,33 +194,92 @@ void battleOnExit(void *params) {
     free(params);
 }
 
-void handlePlayerTurnInit(BattleParams* battleParams, float dt) {
-    if (drawAttackButtonAnimation(battleParams, dt)) {
-        battleParams->state = PLAYER_TURN;
-    }
-}
-
-static void clearSelectRect(PlaydateAPI* pd, int x, int y, bool isAttackOption) {
-    if (!isAttackOption)
-        pd->graphics->fillRect(x, y, 32, 32, kColorWhite);
-    else
-        pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
-}
-
-void handleFightLoop(BattleParams* battleParams) {
-    battleParams->currSequencePos++;
-    if(battleParams->currSequencePos < 3) {
-        battleParams->state = PLAYER_TURN;
-    } else {
-        battleParams->state = ENEMY_TURN;
-    }
-}
-
-Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd) {
+void handlePlayerMenu(BattleParams* battleParams, float dt) {
+    PlaydateAPI* pd = battleParams->pd;
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
-    if (btn_pressed & kButtonA) {
+    const char* options[4] = {"Show Infos", "Attack", "Escape", "Move Player"};
+    const int positions[4][2] = {
+        {20, 160},
+        {255, 160},
+        {20, 200},
+        {255, 200}
+    };
+
+    if (btn_pressed & kButtonA || battleParams->exit_menu) {
+        pd->system->logToConsole("Test");
+        if (battleParams->exit_menu) {
+            pd->system->logToConsole("Exiting menu");
+            for (int i = 0; i < 4; i++) {
+                int x = positions[i][0];
+                int y = positions[i][1] + (int)(battleParams->menu_offset);
+                pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorWhite);
+            }
+            battleParams->menu_offset += dt * (float)(150.0);
+            if (battleParams->menu_offset >= 240) {
+                switch (battleParams->menuIndex) {
+                    case 0:
+                        battleParams->state = PLAYER_SELECT_INFO;
+                        break;
+                    case 1:
+                        battleParams->state = PLAYER_ATTACK_SELECTION_ANIMATION;
+                        break;
+                    case 2:
+                        battleParams->state = BATTLE_ESCAPE;
+                        break;
+                    case 3:
+                        battleParams->state = PLAYER_MOVE;
+                        break;
+                }
+                return;
+            } 
+            for (int i = 0; i < 4; i++) {
+                int x = positions[i][0];
+                int y = positions[i][1] + (int)(battleParams->menu_offset);
+                pd->graphics->drawRect(x, y, 125, 30, kColorBlack);
+                pd->graphics->drawText(options[i], strlen(options[i]), kASCIIEncoding, x + 5, y + 7);
+                if (i == battleParams->menuIndex) {
+                    pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
+                }
+            }
+        } else {
+            battleParams->exit_menu = true;
+        }
+        return;
+    }
+
+    bool directionalPressed = (btn_pressed & (kButtonLeft | kButtonRight | kButtonUp | kButtonDown)) != 0;
+
+    if (directionalPressed) {
+        int col = battleParams->menuIndex % 2;
+        int row = battleParams->menuIndex / 2;
+
+        int x = positions[battleParams->menuIndex][0];
+        int y = positions[battleParams->menuIndex][1];
+        pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
+
+        if (btn_pressed & kButtonLeft || btn_pressed & kButtonRight) {
+            col = 1 - col;
+        }
+        if (btn_pressed & kButtonUp || btn_pressed & kButtonDown) {
+            row = 1 - row;
+        }
+
+        battleParams->menuIndex = row * 2 + col;
+
+        x = positions[battleParams->menuIndex][0];
+        y = positions[battleParams->menuIndex][1];
+        pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
+    }
+}
+
+
+Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect) {
+    PDButtons btn_pressed;
+    pd->system->getButtonState(NULL, &btn_pressed, NULL);
+
+    if ((btn_pressed & kButtonA) || onSelect) {
         for (int i = 0; i < 3; i++) {
             Player* p = battleParams->chars[i];
             if (p && p->fight_x == battleParams->selectX && p->fight_y == battleParams->selectY) {
@@ -229,7 +303,6 @@ Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd) {
         return NULL;
     }
 
-
     int oldSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
     int oldSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
     pd->graphics->fillRect(oldSelectX - 12 , oldSelectY + 12, 8, 8, kColorWhite);
@@ -245,8 +318,21 @@ Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd) {
     return NULL;
 }
 
-Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd) {
+void handlePlayerSelectInfo(BattleParams* battleParams, float dt) {
+    PlaydateAPI* pd = battleParams->pd;
 
+    PDButtons btn_pressed;
+    pd->system->getButtonState(NULL, &btn_pressed, NULL);
+    
+    Player* p = selectPlayer(battleParams, pd, true);
+    
+    if (p != NULL && (btn_pressed & kButtonA)) {
+        char* s;
+        pd->system->formatString(&s, "Name: %s, HP: %d", p->name, p->health);
+        pd->graphics->drawText(s, strlen(s), kASCIIEncoding, 20, 200); 
+    } else if(btn_pressed & kButtonB) {
+        battleParams->state = PLAYER_MENU;
+    }
 }
 
 void handleAction(BattleParams* battleParams, PlaydateAPI* pd, Attack attack) {
@@ -271,7 +357,7 @@ void handleAction(BattleParams* battleParams, PlaydateAPI* pd, Attack attack) {
         pd->graphics->fillRect(battleParams->selectX - 12 , battleParams->selectY + 12, 8, 8, kColorWhite);
         battleParams->selectX = 0;
         battleParams->selectY = 0;
-        battleParams->state = PLAYER_SELECT_P;
+        battleParams->state = PLAYER_SELECT_PLAYER;
         break;
 
     case DEBUFF_ARMOR:
@@ -282,69 +368,42 @@ void handleAction(BattleParams* battleParams, PlaydateAPI* pd, Attack attack) {
     }
 }
 
-void handlePlayerTurn(BattleParams* battleParams) {
-    PlaydateAPI* pd = battleParams->pd;
+void handlePlayerAttackSelection(BattleParams* battleParams, float dt) {
+    drawAttackOptions(battleParams, battleParams->pd);
+
     PDButtons btn_pressed;
-    pd->system->getButtonState(NULL, &btn_pressed, NULL);
+    battleParams->pd->system->getButtonState(NULL, &btn_pressed, NULL);
+
+    if (btn_pressed & kButtonLeft) {
+        battleParams->menuIndex = (battleParams->menuIndex + 3) % 4;
+    } else if (btn_pressed & kButtonRight) {
+        battleParams->menuIndex = (battleParams->menuIndex + 1) % 4;
+    }
 
     if (btn_pressed & kButtonA) {
-        if(battleParams->selectY < 3) {
-            for (int i = 0; i < 3; i++) {
-                Player* p = battleParams->chars[i];
-                if (p && p->fight_x == battleParams->selectX &&
-                    p->fight_y == battleParams->selectY) {
-                    battleParams->state = PLAYER_MOVE;
-                    battleParams->selectP = i;
-                    battleParams->activeP = i;
-                    drawAttackOptions(battleParams, pd);
-                    return;
-                }
-            }
-        } else {
-            int a = (battleParams->selectY == 3 ? 2 : 0) + (battleParams->selectX > 2 ? 1 : 0);
-            handleAction(battleParams, pd, battleParams->chars[battleParams->activeP]->attacks[a]);
-            return;
-        }
-    } 
-
-    int dx = 0, dy = 0;
-    if (btn_pressed & kButtonLeft) {
-        dx = (battleParams->selectY < 3) ? -1 : (battleParams->selectX >= 3 ? -2 : -3);
-    } else if (btn_pressed & kButtonRight) {
-        dx = (battleParams->selectY < 3) ? 1 : ((battleParams->selectX == 1 || battleParams->selectX == 2) ? 2 : 3);
-    } else if (btn_pressed & kButtonUp) {
-        dy = 1;
-    } else if (btn_pressed & kButtonDown) {
-        dy = -1;
+        Player* p = battleParams->chars[battleParams->activeP];
+        handleAction(battleParams, battleParams->pd, p->attacks[battleParams->menuIndex]);
+    } else if(btn_pressed & kButtonB) {
+        battleParams->state = PLAYER_MENU;
     }
+}
 
-    if (!(dx || dy)) {
-        return;
-    }
-
-    int prevX = battleParams->selectX;
-    int prevY = battleParams->selectY;
-    int prevSelectX = selectPositions[prevX][prevY][0];
-    int prevSelectY = selectPositions[prevX][prevY][1];
-
-    if (prevY < 3) {
-        pd->graphics->fillRect(prevSelectX - 12 , prevSelectY + 12, 8, 8, kColorWhite);
+void handleFightLoop(BattleParams* battleParams) {
+    battleParams->currSequencePos++;
+    if(battleParams->currSequencePos < 3) {
+        battleParams->state = PLAYER_MENU;
     } else {
-        pd->graphics->fillRect(prevSelectX - 1, prevSelectY - 1, 127, 32, kColorXOR);
+        battleParams->state = ENEMY_TURN;
     }
+}
 
-    battleParams->selectX = (battleParams->selectX + dx + 5) % 5;
-    battleParams->selectY = (battleParams->selectY + dy + 5) % 5;
+void handleBattleEscape(BattleParams* battleParams) {
+    battleParams->state = PLAYER_MENU;
+}
 
-    int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
-    int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
 
-    if (battleParams->selectY < 3) {
-        LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 2);
-        pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
-    } else {
-        pd->graphics->fillRect(newSelectX - 1, newSelectY - 1, 127, 32, kColorXOR);
-    }
+Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd) {
+    return NULL;
 }
 
 void handlePlayerMove(BattleParams* battleParams) {
@@ -353,7 +412,7 @@ void handlePlayerMove(BattleParams* battleParams) {
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
     if (btn_pressed & kButtonA) {
-        battleParams->state = PLAYER_TURN;
+        battleParams->state = PLAYER_MENU;
         return;
     }
 
@@ -400,26 +459,49 @@ void battleUpdate(void* params, float dt) {
 
     switch (battleParams->state) {
         case PLAYER_TURN_INIT:
-            handlePlayerTurnInit(battleParams, dt);
+            battleParams->menuIndex = 0;
+            battleParams->menu_offset = 0.0;
+            battleParams->exit_menu = false;
+            battleParams->state = PLAYER_MENU;
+            drawPlayerMenu(battleParams, pd);
             break;
-        case PLAYER_TURN:
-            handlePlayerTurn(battleParams);
+
+        case PLAYER_MENU:
+            handlePlayerMenu(battleParams, dt);
             break;
+
+        case PLAYER_SELECT_INFO:
+            handlePlayerSelectInfo(battleParams, dt);
+            break;
+
+        case PLAYER_ATTACK_SELECTION_ANIMATION:
+            if(drawAttackButtonAnimation(battleParams, dt)) {
+                battleParams->state = PLAYER_ATTACK_SELECTION;
+            }
+            break;
+
+        case PLAYER_ATTACK_SELECTION:
+            handlePlayerAttackSelection(battleParams, dt);
+
         case PLAYER_MOVE:
             handlePlayerMove(battleParams);
             break;
-        case PLAYER_SELECT_P:
-            Player* p = selectPlayer(battleParams, pd);
-            if(p != NULL) {
-                drawAttackOptions(battleParams, pd);
-                battleParams->state = PLAYER_TURN;
+
+        case PLAYER_SELECT_PLAYER: {
+                Player* p = selectPlayer(battleParams, pd, false);
+                if(p != NULL) {
+                    drawAttackOptions(battleParams, pd);
+                    battleParams->state = FIGHT_LOOP;
+                }
+                break;
             }
-            break;
         case FIGHT_LOOP:
             handleFightLoop(battleParams);
             break;
-        case PLAYER_SELECT_E:
+
+        case PLAYER_SELECT_ENEMY:
             break;
+
         default:
             break;
     } 
