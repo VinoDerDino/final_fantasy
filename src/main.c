@@ -92,7 +92,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[1].attacks[3] = mage_attacks[3];
 		game.chars[1].attack_count = 4;
 
-		game.chars[2].sprite = newAnimatedSprite("images/playeridle", pd, 0, 0, 32, 32, 4, 0.25);
+		game.chars[2].sprite = newAnimatedSprite("images/hunter", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[2].inventory.count = 16;
 		game.chars[2].inventory.curr_pos = 0;
 		game.chars[2].movement = (PlayerMovement){0};

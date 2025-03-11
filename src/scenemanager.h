@@ -25,8 +25,11 @@ void battleDraw(void* params);
 
 typedef enum {
     PLAYER_TURN_INIT,
+    FIGHT_LOOP,
     PLAYER_TURN,
     PLAYER_MOVE,
+    PLAYER_SELECT_P,
+    PLAYER_SELECT_E,
     ENEMY_TURN,
 } BattleStates;
 
