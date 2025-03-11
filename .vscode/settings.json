@@ -29,6 +29,8 @@
         "unordered_map": "c",
         "vector": "c",
         "system_error": "c",
-        "stddef.h": "c"
+        "stddef.h": "c",
+        "pd_api_sound.h": "c",
+        "enemy.h": "c"
     }
 }

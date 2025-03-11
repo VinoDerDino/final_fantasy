@@ -42,13 +42,14 @@ typedef struct {
 
 typedef struct {
     int id;
-    char* name;
+    const char* name;
     int health;
     int maxHealth;
     int power;
     int dir;
     int fight_x;
     int fight_y;
+    int attack_count;
     Inventory inventory; 
     AnimatedSprite sprite;
     PlayerMovement movement;

@@ -204,6 +204,10 @@ void overworldUpdate(void* params, float dt) {
                     battleParams->selectY = 0;
                     battleParams->select = newBitmapTable("images/select", pd);
                     battleParams->monsters = newBitmapTable("images/monsters", pd);
+                    battleParams->countMonsters = 3;
+                    battleParams->enemies[0] = enemies[0];
+                    battleParams->enemies[1] = enemies[0];
+                    battleParams->enemies[2] = enemies[0];
                     manager->pendingData = battleParams;
                     manager->pendingSceneChange = BATTLE;
                 } else {

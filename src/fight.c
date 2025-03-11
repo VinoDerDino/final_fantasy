@@ -1,60 +1,195 @@
 #include "fight.h"
 
+static int selectPositions[GRID_SIZE][GRID_SIZE][2];
+
+void initializeSelectPositions(void) {
+    const int offset = (GRID_CELL_SIZE - 32) / 2;
+
+    for (int x = 0; x < GRID_SIZE; x++) {
+        for (int y = 0; y < GRID_SIZE; y++) {
+            if (y > 2) {
+                selectPositions[x][y][0] = (x < 3) ? 20 : 255;
+                selectPositions[x][y][1] = (y == 3) ? 200 : 160;
+            } else {
+                if (x < 3) {
+                    selectPositions[x][y][0] = 14 + x * 48 + y * 12 + offset;
+                    selectPositions[x][y][1] = 110 - y * 42 + offset;
+                } else {
+                    int rightCol = x - 3;
+                    selectPositions[x][y][0] = 302 + rightCol * 48 - y * 12 + offset;
+                    selectPositions[x][y][1] = 110 - y * 42 + offset;
+                }
+            }
+        }
+    }
+}
+
 bool drawAttackButtonAnimation(void* params, float dt) {
     BattleParams* battleParams = (BattleParams*)params;
     PlaydateAPI* pd = battleParams->pd;
     Player* player = battleParams->chars[battleParams->activeP];
 
     bool finished = true;
-    float speed = 100.0f;
+    const float speed = 100.0f;
 
-    for(int i = 0; i < 4; i++) {
-        pd->graphics->drawRect(player->attacks[i].rect_x, (int)(player->attacks[i].rect_y), 125, 30, kColorBlack);
-        pd->graphics->drawText(player->attacks[i].name, strlen(player->attacks[i].name), kASCIIEncoding, player->attacks[i].rect_x + 5, (int)(player->attacks[i].rect_y + 7));
+    for (int i = 0; i < 4; i++) {
+        pd->graphics->fillRect(player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
+                               ATTACK_BTN_WIDTH, ATTACK_BTN_HEIGHT, kColorWhite);
 
-        if((int)(player->attacks[i].rect_y) > player->attacks[i].dest_y) {
+        if ((int)player->attacks[i].rect_y > player->attacks[i].dest_y) {
             finished = false;
             float newY = player->attacks[i].rect_y - (speed * dt);
+            player->attacks[i].rect_y = (newY < player->attacks[i].dest_y)
+                                            ? (float)player->attacks[i].dest_y
+                                            : newY;
+        }
 
-            if (newY < player->attacks[i].dest_y) {
-                player->attacks[i].rect_y = (float)player->attacks[i].dest_y;
-            } else {
-                player->attacks[i].rect_y = newY;
+        pd->graphics->drawRect(player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
+                               ATTACK_BTN_WIDTH, ATTACK_BTN_HEIGHT, kColorBlack);
+        pd->graphics->drawText(player->attacks[i].name, strlen(player->attacks[i].name),
+                               kASCIIEncoding,
+                               player->attacks[i].rect_x + 5,
+                               (int)(player->attacks[i].rect_y + 7));
+    }
+    return finished;
+}
+
+void drawGridLeft(PlaydateAPI* pd) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            int xPos = GRID_LEFT_START_X + i * 48 + j * 12;
+            int yPos = GRID_LEFT_START_Y - j * 42;
+            pd->graphics->drawRect(xPos, yPos, GRID_CELL_SIZE, GRID_CELL_SIZE, kColorBlack);
+        }
+    }
+}
+
+void drawGridRight(BattleParams* battleParams, PlaydateAPI* pd) {
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 3; j++) {
+            int xPos = GRID_RIGHT_START_X - i * 48 - j * 12;
+            int yPos = GRID_RIGHT_START_Y - j * 42;
+            pd->graphics->drawRect(xPos, yPos, GRID_CELL_SIZE, GRID_CELL_SIZE, kColorBlack);
+            if (i == 1) {
+                LCDBitmap *m = pd->graphics->getTableBitmap(battleParams->monsters,
+                                                            battleParams->enemies[j].id);
+                pd->graphics->drawBitmap(m, xPos + 2, yPos + 2, kBitmapUnflipped);
             }
         }
     }
-    return finished;
+}
+
+void drawAttackOptions(BattleParams* battleParams, PlaydateAPI* pd) {
+    Player* player = battleParams->chars[battleParams->activeP];
+    pd->system->logToConsole("Curr player: %d, %s", battleParams->selectP, player->attacks[0].name);
+
+    for (int i = 0; i < player->attack_count; i++) {
+        pd->graphics->fillRect(player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
+                               ATTACK_BTN_WIDTH, ATTACK_BTN_HEIGHT, kColorWhite);
+        pd->graphics->drawRect(player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
+                               ATTACK_BTN_WIDTH, ATTACK_BTN_HEIGHT, kColorBlack);
+        pd->graphics->drawText(player->attacks[i].name, strlen(player->attacks[i].name),
+                               kASCIIEncoding,
+                               player->attacks[i].rect_x + 5,
+                               (int)(player->attacks[i].rect_y + 7));
+        pd->system->logToConsole("Attack %d: %s", i, player->attacks[i].name);
+    }
+}
+
+void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd) {
+    if (!battleParams->sequence) return;
+
+    const int sequenceCount = 3 + battleParams->countMonsters;
+    const int offset = ((3 + battleParams->countMonsters) / 2) * 18;
+    const int rectX = 196 - offset;
+    const int rectWidth = 18 * (3 + battleParams->countMonsters) + 4;
+
+    pd->graphics->fillRect(rectX, -1, rectWidth, 22, kColorWhite);
+    pd->graphics->drawRect(rectX, -1, rectWidth, 22, kColorBlack);
+
+    for (int i = 0; i < sequenceCount; i++) {
+        if (i >= (int)(sizeof(battleParams->sequence) / sizeof(battleParams->sequence[0])))
+            return;
+
+        int curr = battleParams->sequence[i];
+        LCDBitmap *m = NULL;
+        if (curr < 3) {
+            m = pd->graphics->getTableBitmap(battleParams->chars[curr]->sprite.table, 0);
+        } else {
+            m = pd->graphics->getTableBitmap(battleParams->monsters,
+                                             battleParams->enemies[curr - 3].id);
+        }
+        pd->graphics->drawScaledBitmap(m, (200 - offset) + i * 18, 1, 0.5, 0.5);
+        
+        if (i == battleParams->currSequencePos && curr < 3) {
+            pd->graphics->fillRect((199 - offset) + i * 18, 0, 18, 18, kColorXOR);
+        }
+    }
+}
+
+static void shuffleSequence(int* sequence, int count) {
+    for (int i = count - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        int temp = sequence[i];
+        sequence[i] = sequence[j];
+        sequence[j] = temp;
+    }
 }
 
 void battleOnEnter(void *params) {
     BattleParams* battleParams = (BattleParams*)params;
     PlaydateAPI* pd = battleParams->pd;
-    
+
     pd->graphics->clear(kColorWhite);
 
     battleParams->state = PLAYER_TURN_INIT;
     battleParams->activeP = 0;
+    battleParams->passed_time = 0.0f;
 
-    for (int i = 0; i < 4; i++) {
-        int dest_x = (i % 2) ? 255 : 20;
-        int dest_y = (i / 2) ? 200 : 160;
-    
-        battleParams->chars[battleParams->activeP]->attacks[i].rect_x = dest_x;
-        battleParams->chars[battleParams->activeP]->attacks[i].rect_y = (float)(dest_y + 50 + 25 * i);
-        battleParams->chars[battleParams->activeP]->attacks[i].dest_y = dest_y;
+    for (int i = 0; i < 3; i++) {
+        Player* player = battleParams->chars[i];
+        for (int j = 0; j < player->attack_count; j++) {
+            int dest_x = (j % 2) ? 255 : 20;
+            int dest_y = (j / 2) ? 200 : 160;
+            if (i == battleParams->activeP) {
+                player->attacks[j].rect_y = (float)(dest_y + 50 + 25 * j);
+                player->attacks[j].dest_y = dest_y;
+            } else {
+                player->attacks[j].rect_y = dest_y;
+            }
+            player->attacks[j].rect_x = dest_x;
+        }
     }
+
+    const int count = 3 + battleParams->countMonsters;
+    for (int i = 0; i < count; i++) {
+        battleParams->sequence[i] = i;
+    }
+    battleParams->currSequencePos = 0;
+    while(!(battleParams->sequence[battleParams->currSequencePos] < 3)) {
+        battleParams->currSequencePos = (battleParams->currSequencePos + 1) % count;
+    }
+    shuffleSequence(battleParams->sequence, count);
+
+    initializeSelectPositions();
+    battleDraw(params);
 }
 
-void battleOnExit(void* params) {
-    // Freigeben des dynamisch allokierten Speichers für BattleParams
+void battleOnExit(void *params) {
     free(params);
 }
 
 void handlePlayerTurnInit(BattleParams* battleParams, float dt) {
-    bool finished = drawAttackButtonAnimation(battleParams, dt);
-    if (finished) {
+    if (drawAttackButtonAnimation(battleParams, dt)) {
         battleParams->state = PLAYER_TURN;
     }
+}
+
+static void clearSelectRect(PlaydateAPI* pd, int x, int y, bool isAttackOption) {
+    if (!isAttackOption)
+        pd->graphics->fillRect(x, y, 32, 32, kColorWhite);
+    else
+        pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
 }
 
 void handlePlayerTurn(BattleParams* battleParams) {
@@ -63,15 +198,27 @@ void handlePlayerTurn(BattleParams* battleParams) {
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
     if (btn_pressed & kButtonA) {
-        for (int i = 0; i < 3; i++) {
-            Player* p = battleParams->chars[i];
-            if (p != NULL && p->fight_x == battleParams->selectX && p->fight_y == battleParams->selectY) {
-                battleParams->state = PLAYER_MOVE;
-                battleParams->selectP = i;
-                return;
+        if(battleParams->selectY < 3) {
+            for (int i = 0; i < 3; i++) {
+                Player* p = battleParams->chars[i];
+                if (p && p->fight_x == battleParams->selectX &&
+                    p->fight_y == battleParams->selectY) {
+                    battleParams->state = PLAYER_MOVE;
+                    battleParams->selectP = i;
+                    battleParams->activeP = i;
+                    drawAttackOptions(battleParams, pd);
+                    return;
+                }
             }
+        } else {
+            battleParams->currSequencePos++;
+            while(!(battleParams->sequence[battleParams->currSequencePos] < 3)) {
+                battleParams->currSequencePos = (battleParams->currSequencePos + 1) % (3 + battleParams->countMonsters);
+            }
+            pd->system->logToConsole("New sequence pos: %d, %d", battleParams->currSequencePos, battleParams->sequence[battleParams->currSequencePos]);
+            drawAttackSequence(battleParams, pd);
         }
-    }
+    } 
 
     int dx = 0, dy = 0;
     if (btn_pressed & kButtonLeft) {
@@ -84,33 +231,32 @@ void handlePlayerTurn(BattleParams* battleParams) {
         dy = -1;
     }
 
-    if (dx || dy) {
-        battleParams->selectX = (battleParams->selectX + dx + 5) % 5;
-        battleParams->selectY = (battleParams->selectY + dy + 5) % 5;
+    if (!(dx || dy)) {
+        return;
     }
 
-    int offset = (GRID_CELL_SIZE - 32) / 2;
-    int selectX, selectY;
+    int prevX = battleParams->selectX;
+    int prevY = battleParams->selectY;
+    int prevSelectX = selectPositions[prevX][prevY][0];
+    int prevSelectY = selectPositions[prevX][prevY][1];
 
-    if (battleParams->selectY > 2) {
-        selectX = (battleParams->selectX < 3) ? 20 : 255;
-        selectY = (battleParams->selectY == 3) ? 200 : 160;
+    if (prevY < 3) {
+        pd->graphics->fillRect(prevSelectX - 12 , prevSelectY + 12, 8, 8, kColorWhite);
     } else {
-        if (battleParams->selectX < 3) {
-            selectX = 14 + battleParams->selectX * 48 + battleParams->selectY * 12 + offset;
-            selectY = 110 - battleParams->selectY * 42 + offset;
-        } else {
-            int rightCol = battleParams->selectX - 3;
-            selectX = 302 + rightCol * 48 - battleParams->selectY * 12 + offset;
-            selectY = 110 - battleParams->selectY * 42 + offset;
-        }
+        pd->graphics->fillRect(prevSelectX - 1, prevSelectY - 1, 127, 32, kColorXOR);
     }
 
-    LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 1);
-    pd->graphics->drawBitmap(s, selectX, selectY, kBitmapUnflipped);
+    battleParams->selectX = (battleParams->selectX + dx + 5) % 5;
+    battleParams->selectY = (battleParams->selectY + dy + 5) % 5;
 
-    if (battleParams->selectX == 3) {
-        pd->graphics->drawText(enemies[0].name, strlen(enemies[0].name), kASCIIEncoding, 50, 220);
+    int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
+    int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+
+    if (battleParams->selectY < 3) {
+        LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 2);
+        pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
+    } else {
+        pd->graphics->fillRect(newSelectX - 1, newSelectY - 1, 127, 32, kColorXOR);
     }
 }
 
@@ -119,8 +265,9 @@ void handlePlayerMove(BattleParams* battleParams) {
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
-    if(btn_pressed & kButtonA) {
+    if (btn_pressed & kButtonA) {
         battleParams->state = PLAYER_TURN;
+        return;
     }
 
     int dx = 0, dy = 0;
@@ -128,19 +275,41 @@ void handlePlayerMove(BattleParams* battleParams) {
     else if (btn_pressed & kButtonRight)  dx = 1;
     else if (btn_pressed & kButtonUp)     dy = 1;
     else if (btn_pressed & kButtonDown)   dy = -1;
-    
-    if (dx || dy) {
-        battleParams->selectX = (battleParams->selectX + dx + 3) % 3;
-        battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
-        battleParams->chars[battleParams->selectP]->fight_x = battleParams->selectX;
-        battleParams->chars[battleParams->selectP]->fight_y = battleParams->selectY;
+
+    if (!dx && !dy) return;
+
+    int newX = (battleParams->selectX + dx + 3) % 3;
+    int newY = (battleParams->selectY + dy + 3) % 3;
+
+    for (int i = 0; i < 3; i++) {
+        if (i != battleParams->selectP && battleParams->chars[i] &&
+            battleParams->chars[i]->fight_x == newX && battleParams->chars[i]->fight_y == newY) {
+            return;
+        }
     }
+
+    int prevSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
+    int prevSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+    pd->graphics->fillRect(prevSelectX - 1, prevSelectY - 1, 34, 34, kColorWhite);
+    pd->graphics->fillRect(prevSelectX - 12 , prevSelectY + 12, 8, 8, kColorWhite);
+
+
+    battleParams->selectX = newX;
+    battleParams->selectY = newY;
+    battleParams->chars[battleParams->selectP]->fight_x = newX;
+    battleParams->chars[battleParams->selectP]->fight_y = newY;
+    LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 2);
+
+    int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
+    int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+    pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
 }
 
 void battleUpdate(void* params, float dt) {
     BattleParams* battleParams = (BattleParams*)params;
+    PlaydateAPI* pd = battleParams->pd;
 
-    battleDraw(params);
+    battleParams->passed_time += dt;
 
     switch (battleParams->state) {
         case PLAYER_TURN_INIT:
@@ -154,15 +323,17 @@ void battleUpdate(void* params, float dt) {
             break;
         default:
             break;
-    }
+    } 
 
-    int offset = (GRID_CELL_SIZE - 32) / 2;
-    int selectX, selectY;
-    for(int i = 0; i < 3; i++) {
-        if(battleParams->chars[i] != NULL) {
-            selectX = 14 + battleParams->chars[i]->fight_x * 48 + battleParams->chars[i]->fight_y * 12 + offset;
-            selectY = 110 - battleParams->chars[i]->fight_y * 42 + offset;
-            drawAnimatedSprite(&battleParams->chars[i]->sprite, battleParams->pd, selectX, selectY, true, kBitmapUnflipped, dt);
+    const int offset = (GRID_CELL_SIZE - 32) / 2;
+    for (int i = 0; i < 3; i++) {
+        if (battleParams->chars[i]) {
+            int selectX = GRID_LEFT_START_X + battleParams->chars[i]->fight_x * 48 +
+                          battleParams->chars[i]->fight_y * 12 + offset;
+            int selectY = GRID_LEFT_START_Y - battleParams->chars[i]->fight_y * 42 + offset;
+            pd->graphics->fillRect(selectX - 1, selectY - 1, 34, 34, kColorWhite);
+            drawAnimatedSprite(&battleParams->chars[i]->sprite, pd, selectX, selectY, true,
+                               kBitmapUnflipped, dt);
         }
     }
 }
@@ -170,34 +341,9 @@ void battleUpdate(void* params, float dt) {
 void battleDraw(void* params) {
     BattleParams* battleParams = (BattleParams*)params;
     PlaydateAPI* pd = battleParams->pd;
-    LCDBitmapTable* monsters = battleParams->monsters;
 
     pd->graphics->clear(kColorWhite);
-
-    int start_x = 14, start_y = 110;
-
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
-            pd->graphics->drawRect(start_x + i * 48 + j * 12, start_y - j * 42, GRID_CELL_SIZE, GRID_CELL_SIZE, kColorBlack);
-        }
-    }
-    
-    start_x = 350;
-
-    for(int i = 0; i < 2; i++) {
-        for(int j = 0; j < 3; j++) {
-            pd->graphics->drawRect(start_x - i * 48 - j * 12, start_y - j * 42, GRID_CELL_SIZE, GRID_CELL_SIZE, kColorBlack);
-            if(i == 1) {
-                LCDBitmap* m = pd->graphics->getTableBitmap(monsters, j);
-                pd->graphics->drawBitmap(m, start_x + 2 - i * 48 - j * 12, start_y + 2 - j * 42, kBitmapUnflipped);
-            }
-        }
-    }  
-    
-    Player* player = battleParams->chars[battleParams->activeP];
-
-    for(int i = 0; i < 4; i++) {
-        pd->graphics->drawRect(player->attacks[i].rect_x, (int)(player->attacks[i].rect_y), 125, 30, kColorBlack);
-        pd->graphics->drawText(player->attacks[i].name, strlen(player->attacks[i].name), kASCIIEncoding, player->attacks[i].rect_x + 5, player->attacks[i].rect_y + 7); 
-    }
+    drawGridLeft(pd);
+    drawGridRight(battleParams, pd);
+    drawAttackSequence(battleParams, pd);
 }

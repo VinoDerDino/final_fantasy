@@ -5,6 +5,7 @@
 
 #include "pd_api.h"
 #include "player.h"
+#include "enemy.h"
 #include "camera.h"
 
 void overworldEnter(void* params);
@@ -71,10 +72,15 @@ typedef struct {
 typedef struct {
     Player* chars[3];
     PlaydateAPI* pd;
-    int selectX, selectY, selectP, activeP;
     LCDBitmapTable* select;
     LCDBitmapTable* monsters;
+    int selectX, selectY, selectP, activeP;
+    int countMonsters;
+    Enemy enemies[3];
+    int sequence[6];
+    int currSequencePos;
     BattleStates state;
+    float passed_time;
 } BattleParams;
 
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams);
