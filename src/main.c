@@ -9,6 +9,7 @@
 #include "game.h"
 #include "overworld.h"
 #include "fight.h"
+#include "attack.h"
 
 static int update(void* userdata);
 
@@ -72,72 +73,36 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[0].dir = 0;
 		game.chars[0].fight_x = 1;
 		game.chars[0].fight_y = 1;
-		game.chars[0].attacks[0].name = "player 0";
-		game.chars[0].attacks[0].dmg = 5;
-		game.chars[0].attacks[0].type = BASIC_ATTACK;
-		game.chars[0].attacks[0].pattern = SINGLE_TARGET;
-		game.chars[0].attacks[1].name = "2";
-		game.chars[0].attacks[1].dmg = 5;
-		game.chars[0].attacks[1].type = BASIC_ATTACK;
-		game.chars[0].attacks[1].pattern = SINGLE_TARGET;
-		game.chars[0].attacks[2].name = "3";
-		game.chars[0].attacks[2].dmg = 5;
-		game.chars[0].attacks[2].type = BASIC_ATTACK;
-		game.chars[0].attacks[2].pattern = SINGLE_TARGET;
-		game.chars[0].attacks[3].name = "4";
-		game.chars[0].attacks[3].dmg = 5;
-		game.chars[0].attacks[3].type = BASIC_ATTACK;
-		game.chars[0].attacks[3].pattern = SINGLE_TARGET;
+		game.chars[0].attacks[0] = knight_attacks[0];
+		game.chars[0].attacks[1] = knight_attacks[1];
+		game.chars[0].attacks[2] = knight_attacks[2];
+		game.chars[0].attacks[3] = knight_attacks[3];
 		game.chars[0].attack_count = 4;
 
-		game.chars[1].sprite = newAnimatedSprite("images/playeridle", pd, 0, 0, 32, 32, 4, 0.25);
+		game.chars[1].sprite = newAnimatedSprite("images/mage", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[1].inventory.count = 16;
 		game.chars[1].inventory.curr_pos = 0;
 		game.chars[1].movement = (PlayerMovement){0};
 		game.chars[1].dir = 0;
 		game.chars[1].fight_x = 1;
 		game.chars[1].fight_y = 0;
-		game.chars[1].attacks[0].name = "player 1";
-		game.chars[1].attacks[0].dmg = 5;
-		game.chars[1].attacks[0].type = BASIC_ATTACK;
-		game.chars[1].attacks[0].pattern = SINGLE_TARGET;
-		game.chars[1].attacks[1].name = "2";
-		game.chars[1].attacks[1].dmg = 5;
-		game.chars[1].attacks[1].type = BASIC_ATTACK;
-		game.chars[1].attacks[1].pattern = SINGLE_TARGET;
-		game.chars[1].attacks[2].name = "3";
-		game.chars[1].attacks[2].dmg = 5;
-		game.chars[1].attacks[2].type = BASIC_ATTACK;
-		game.chars[1].attacks[2].pattern = SINGLE_TARGET;
-		game.chars[1].attacks[3].name = "4";
-		game.chars[1].attacks[3].dmg = 5;
-		game.chars[1].attacks[3].type = BASIC_ATTACK;
-		game.chars[1].attacks[3].pattern = SINGLE_TARGET;
+		game.chars[1].attacks[0] = mage_attacks[0];
+		game.chars[1].attacks[1] = mage_attacks[1];
+		game.chars[1].attacks[2] = mage_attacks[2];
+		game.chars[1].attacks[3] = mage_attacks[3];
 		game.chars[1].attack_count = 4;
 
-		game.chars[2].sprite = newAnimatedSprite("images/mage", pd, 0, 0, 32, 32, 4, 0.25);
+		game.chars[2].sprite = newAnimatedSprite("images/playeridle", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[2].inventory.count = 16;
 		game.chars[2].inventory.curr_pos = 0;
 		game.chars[2].movement = (PlayerMovement){0};
 		game.chars[2].dir = 0;
 		game.chars[2].fight_x = 1;
 		game.chars[2].fight_y = 2;
-		game.chars[2].attacks[0].name = "Basic";
-		game.chars[2].attacks[0].dmg = 5;
-		game.chars[2].attacks[0].type = BASIC_ATTACK;
-		game.chars[2].attacks[0].pattern = SINGLE_TARGET;
-		game.chars[2].attacks[1].name = "Schwanz";
-		game.chars[2].attacks[1].dmg = 5;
-		game.chars[2].attacks[1].type = BASIC_ATTACK;
-		game.chars[2].attacks[1].pattern = SINGLE_TARGET;
-		game.chars[2].attacks[2].name = "Penis";
-		game.chars[2].attacks[2].dmg = 5;
-		game.chars[2].attacks[2].type = BASIC_ATTACK;
-		game.chars[2].attacks[2].pattern = SINGLE_TARGET;
-		game.chars[2].attacks[3].name = "Hoden";
-		game.chars[2].attacks[3].dmg = 5;
-		game.chars[2].attacks[3].type = BASIC_ATTACK;
-		game.chars[2].attacks[3].pattern = SINGLE_TARGET;
+		game.chars[2].attacks[0] = hunter_attacks[0];
+		game.chars[2].attacks[1] = hunter_attacks[1];
+		game.chars[2].attacks[2] = hunter_attacks[2];
+		game.chars[2].attacks[3] = hunter_attacks[3];
 		game.chars[2].attack_count = 4;
 
 		game.lastFrameTime = 0;

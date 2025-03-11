@@ -4,34 +4,13 @@
 #include <stdbool.h>
 
 #include "inventory.h"
+#include "attack.h"
 #include "sprite.h"
 
 #define MAX_PLAYER_COUNT 3
 #define TOTAL_PLAYER_COUNT 10
 #define MOVE_DURATION 0.2f
 
-typedef enum {
-    SINGLE_TARGET,
-    ROW,
-    COLUMN,
-    AREA,
-} AttackPattern;
-
-typedef enum {
-    BASIC_ATTACK,
-    FIRE_ATTACK,
-    WATER_ATTACK,
-    GROUND_ATTACK,
-} AttackType;
-
-typedef struct {
-    const char* name;
-    int dmg;
-    int rect_x, dest_y;
-    float rect_y;
-    AttackType type;
-    AttackPattern pattern;
-} Attack;
 
 typedef struct {
     int startX, startY;
