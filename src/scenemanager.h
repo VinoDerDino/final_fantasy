@@ -80,9 +80,11 @@ typedef struct {
 typedef struct {
     Player* chars[3];
     PlaydateAPI* pd;
+    LCDBitmap* character_info;
     LCDBitmapTable* select;
     LCDBitmapTable* monsters;
     int selectX, selectY, selectP, activeP, menuIndex;
+    int character_info_offset;
     int countMonsters;
     Enemy enemies[3];
     int sequence[6];

@@ -57,17 +57,15 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.tiletable = newBitmapTable("images/grassybig", pd);
 		decodeItems("jsons/test.json", &game.itemlist);
 
-		game.chars[0].sprite = newAnimatedSprite("images/playeridle", pd, 0, 0, 32, 32, 4, 0.25);
-
-		int count, cellswide;
-		pd->graphics->getBitmapTableInfo(game.chars[0].sprite.table, &count, &cellswide);
-		pd->system->logToConsole("INFO count: %d, cellswide: %d", count, cellswide);
-
 		for(int i = 0; i < 16; i++) {
 			game.chars[0].inventory.items[i] = game.itemlist.items[i];
 		}
 
+		game.chars[0].sprite = newAnimatedSprite("images/playeridle", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[0].inventory.count = 16;
+		game.chars[0].name = "Knight";
+		game.chars[0].health = 100;
+		game.chars[0].maxHealth = 100;
 		game.chars[0].inventory.curr_pos = 0;
 		game.chars[0].movement = (PlayerMovement){0};
 		game.chars[0].dir = 0;
@@ -81,6 +79,9 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 
 		game.chars[1].sprite = newAnimatedSprite("images/mage", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[1].inventory.count = 16;
+		game.chars[1].name = "Mage";
+		game.chars[1].health = 75;
+		game.chars[1].maxHealth = 100;
 		game.chars[1].inventory.curr_pos = 0;
 		game.chars[1].movement = (PlayerMovement){0};
 		game.chars[1].dir = 0;
@@ -94,6 +95,9 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 
 		game.chars[2].sprite = newAnimatedSprite("images/hunter", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[2].inventory.count = 16;
+		game.chars[2].name = "Hunter";		
+		game.chars[2].health = 25;
+		game.chars[2].maxHealth = 100;
 		game.chars[2].inventory.curr_pos = 0;
 		game.chars[2].movement = (PlayerMovement){0};
 		game.chars[2].dir = 0;
@@ -139,6 +143,8 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		b_params.pd = pd;
 		b_params.selectX = 0;
 		b_params.selectY = 0;
+		b_params.character_info = newBitmap("images/characterinfo", pd);
+		b_params.character_info_offset = 84;
 		b_params.select = newBitmapTable("images/select", pd);
 		b_params.monsters = newBitmapTable("images/monsters", pd);
 		b_params.state = PLAYER_MENU;
