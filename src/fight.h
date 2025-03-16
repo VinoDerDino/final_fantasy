@@ -31,9 +31,12 @@
 
 #define NUM_PLAYERS 3
 
+extern int selectPositions[GRID_SIZE][GRID_SIZE][2];
 extern const char* menuOptions[4];
 extern const int menuPositions[4][2];
 
+
+// drawing functions
 inline void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, const char* text, bool highlighted);
 inline void getDirection(PDButtons btn_pressed, int* dx, int* dy);
 bool drawAttackButtonAnimation(void* params, float dt);
@@ -43,5 +46,20 @@ void drawAttackOptions(BattleParams* battleParams, PlaydateAPI* pd);
 void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd);
 void drawFillHealthbar(PlaydateAPI* pd, int curr_health, int total_health);
 void drawPlayerMenu(BattleParams* battleParams, PlaydateAPI* pd);
+
+//logic functions
+void handlePlayerMenu(BattleParams* battleParams, float dt);
+void handlePlayerSelectInfo(BattleParams* battleParams, float dt);
+void handleAction(BattleParams* battleParams, PlaydateAPI* pd, Attack attack);
+void handlePlayerAttackSelection(BattleParams* battleParams, float dt);
+void handleFightLoop(BattleParams* battleParams);
+void handleBattleEscape(BattleParams* battleParams);
+void handlePlayerMove(BattleParams* battleParams);
+
+//helper functions
+void initializeSelectPositions(void);
+inline void getDirection(PDButtons btn_pressed, int* dx, int* dy);
+Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect);
+Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd);
 
 #endif
