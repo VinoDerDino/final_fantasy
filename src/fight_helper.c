@@ -30,7 +30,7 @@ void initializeSelectPositions(void) {
     }
 }
 
-inline void getDirection(PDButtons btn_pressed, int* dx, int* dy) {
+void getDirection(PDButtons btn_pressed, int* dx, int* dy) {
     *dx = 0;
     *dy = 0;
     if (btn_pressed & kButtonLeft)  *dx = -1;

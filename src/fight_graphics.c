@@ -1,6 +1,6 @@
 #include "fight.h"
 
-inline void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, const char* text, bool highlighted) {
+void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, const char* text, bool highlighted) {
     pd->graphics->fillRect(x - BUTTON_OUTLINE_OFFSET, y - BUTTON_OUTLINE_OFFSET,
     width + 4, height + 4, kColorWhite);
     pd->graphics->drawRect(x, y, width, height, kColorBlack);
@@ -9,15 +9,6 @@ inline void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, con
         pd->graphics->fillRect(x - 1, y - 1,
             width + 2, height + 2, kColorXOR);
     }
-}
-
-inline void getDirection(PDButtons btn_pressed, int* dx, int* dy) {
-    *dx = 0;
-    *dy = 0;
-    if (btn_pressed & kButtonLeft)  *dx = -1;
-    else if (btn_pressed & kButtonRight) *dx = 1;
-    if (btn_pressed & kButtonUp)    *dy = 1;
-    else if (btn_pressed & kButtonDown)  *dy = -1;
 }
 
 bool drawAttackButtonAnimation(void* params, float dt) {

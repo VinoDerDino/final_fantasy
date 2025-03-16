@@ -116,6 +116,7 @@ void handlePlayerSelectInfo(BattleParams* battleParams, float dt) {
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
     
     if (btn_pressed & kButtonB) {
+        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
         int oldSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
         int oldSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);

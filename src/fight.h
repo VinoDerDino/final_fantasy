@@ -37,8 +37,7 @@ extern const int menuPositions[4][2];
 
 
 // drawing functions
-inline void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, const char* text, bool highlighted);
-inline void getDirection(PDButtons btn_pressed, int* dx, int* dy);
+void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, const char* text, bool highlighted);
 bool drawAttackButtonAnimation(void* params, float dt);
 bool drawAttackButtonAnimationReverse(void* params, float dt);
 void drawGridLeft(PlaydateAPI* pd);
@@ -59,7 +58,7 @@ void handlePlayerMove(BattleParams* battleParams);
 
 //helper functions
 void initializeSelectPositions(void);
-inline void getDirection(PDButtons btn_pressed, int* dx, int* dy);
+void getDirection(PDButtons btn_pressed, int* dx, int* dy);
 Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect);
 Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd);
 void shuffleSequence(int* sequence, int count);
