@@ -31,4 +31,17 @@
 
 #define NUM_PLAYERS 3
 
+extern const char* menuOptions[4];
+extern const int menuPositions[4][2];
+
+inline void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, const char* text, bool highlighted);
+inline void getDirection(PDButtons btn_pressed, int* dx, int* dy);
+bool drawAttackButtonAnimation(void* params, float dt);
+void drawGridLeft(PlaydateAPI* pd);
+void drawGridRight(BattleParams* battleParams, PlaydateAPI* pd);
+void drawAttackOptions(BattleParams* battleParams, PlaydateAPI* pd);
+void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd);
+void drawFillHealthbar(PlaydateAPI* pd, int curr_health, int total_health);
+void drawPlayerMenu(BattleParams* battleParams, PlaydateAPI* pd);
+
 #endif

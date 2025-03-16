@@ -80,7 +80,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[1].sprite = newAnimatedSprite("images/mage", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[1].inventory.count = 16;
 		game.chars[1].name = "Mage";
-		game.chars[1].health = 75;
+		game.chars[1].health = 50;
 		game.chars[1].maxHealth = 100;
 		game.chars[1].inventory.curr_pos = 0;
 		game.chars[1].movement = (PlayerMovement){0};
@@ -96,7 +96,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[2].sprite = newAnimatedSprite("images/hunter", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[2].inventory.count = 16;
 		game.chars[2].name = "Hunter";		
-		game.chars[2].health = 25;
+		game.chars[2].health = 10;
 		game.chars[2].maxHealth = 100;
 		game.chars[2].inventory.curr_pos = 0;
 		game.chars[2].movement = (PlayerMovement){0};

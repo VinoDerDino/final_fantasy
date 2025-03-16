@@ -3,25 +3,13 @@
 #include <stdlib.h>
 
 static int selectPositions[GRID_SIZE][GRID_SIZE][2];
-static const char* menuOptions[4] = {"Show Infos", "Attack", "Escape", "Move Player"};
-static const int menuPositions[4][2] = {
+const char* menuOptions[4] = {"Show Infos", "Attack", "Escape", "Move Player"};
+const int menuPositions[4][2] = {
     {20, 160},
     {255, 160},
     {20, 200},
     {255, 200}
 };
-
-static inline void drawButton(PlaydateAPI* pd, int x, int y, int width, int height,
-                               const char* text, bool highlighted) {
-    pd->graphics->fillRect(x - BUTTON_OUTLINE_OFFSET, y - BUTTON_OUTLINE_OFFSET,
-                           width + 2, height + 2, kColorWhite);
-    pd->graphics->drawRect(x, y, width, height, kColorBlack);
-    pd->graphics->drawText(text, strlen(text), kASCIIEncoding, x + BUTTON_TEXT_OFFSET_X, y + BUTTON_TEXT_OFFSET_Y);
-    if (highlighted) {
-        pd->graphics->fillRect(x - BUTTON_OUTLINE_OFFSET, y - BUTTON_OUTLINE_OFFSET,
-                               width + 2, height + 2, kColorXOR);
-    }
-}
 
 static inline void getDirection(PDButtons btn_pressed, int* dx, int* dy) {
     *dx = 0;
@@ -50,152 +38,6 @@ void initializeSelectPositions(void) {
                 }
             }
         }
-    }
-}
-
-bool drawAttackButtonAnimation(void* params, float dt) {
-    BattleParams* battleParams = (BattleParams*)params;
-    PlaydateAPI* pd = battleParams->pd;
-    Player* player = battleParams->chars[battleParams->activeP];
-
-    bool finished = true;
-    const float speed = ANIMATION_SPEED;
-
-    for (int i = 0; i < 4; i++) {
-        pd->graphics->fillRect(player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
-                               ATTACK_BTN_WIDTH, ATTACK_BTN_HEIGHT, kColorWhite);
-
-        if ((int)player->attacks[i].rect_y > player->attacks[i].dest_y) {
-            finished = false;
-            float newY = player->attacks[i].rect_y - (speed * dt);
-            player->attacks[i].rect_y = (newY < player->attacks[i].dest_y) ?
-                                        (float)player->attacks[i].dest_y : newY;
-        }
-        
-        drawButton(pd, player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
-                   ATTACK_BTN_WIDTH, ATTACK_BTN_HEIGHT, player->attacks[i].name, false);
-    }
-    return finished;
-}
-
-void drawGridLeft(PlaydateAPI* pd) {
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            int xPos = GRID_LEFT_START_X + i * GRID_HORIZONTAL_SPACING + j * GRID_DIAGONAL_OFFSET;
-            int yPos = GRID_LEFT_START_Y - j * GRID_VERTICAL_SPACING;
-            pd->graphics->drawRect(xPos, yPos, GRID_CELL_SIZE, GRID_CELL_SIZE, kColorBlack);
-        }
-    }
-}
-
-void drawGridRight(BattleParams* battleParams, PlaydateAPI* pd) {
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 3; j++) {
-            int xPos = GRID_RIGHT_START_X - i * GRID_HORIZONTAL_SPACING - j * GRID_DIAGONAL_OFFSET;
-            int yPos = GRID_RIGHT_START_Y - j * GRID_VERTICAL_SPACING;
-            pd->graphics->drawRect(xPos, yPos, GRID_CELL_SIZE, GRID_CELL_SIZE, kColorBlack);
-            if (i == 1) {
-                LCDBitmap *m = pd->graphics->getTableBitmap(battleParams->monsters, battleParams->enemies[j].id);
-                pd->graphics->drawBitmap(m, xPos + 2, yPos + 2, kBitmapUnflipped);
-            }
-        }
-    }
-}
-
-void drawAttackOptions(BattleParams* battleParams, PlaydateAPI* pd) {
-    Player* player = battleParams->chars[battleParams->activeP];
-    for (int i = 0; i < player->attack_count; i++) {
-        bool highlighted = (i == battleParams->menuIndex);
-        drawButton(pd, player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
-                   ATTACK_BTN_WIDTH, ATTACK_BTN_HEIGHT, player->attacks[i].name, highlighted);
-    }
-}
-
-void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd) {
-    if (!battleParams->sequence) return;
-
-    const int sequenceCount = 3 + battleParams->countMonsters;
-    const int offset = ((3 + battleParams->countMonsters) / 2) * 18;
-    const int rectX = 196 - offset;
-    const int rectWidth = 18 * (3 + battleParams->countMonsters) + 4;
-
-    pd->graphics->fillRect(rectX, -1, rectWidth, 22, kColorWhite);
-    pd->graphics->drawRect(rectX, -1, rectWidth, 22, kColorBlack);
-
-    for (int i = 0; i < sequenceCount; i++) {
-        if (i >= (int)(sizeof(battleParams->sequence) / sizeof(battleParams->sequence[0])))
-            return;
-
-        int curr = battleParams->sequence[i];
-        LCDBitmap *m = NULL;
-        if (curr < 3) {
-            m = pd->graphics->getTableBitmap(battleParams->chars[curr]->sprite.table, 0);
-        } else {
-            m = pd->graphics->getTableBitmap(battleParams->monsters, battleParams->enemies[curr - 3].id);
-        }
-        pd->graphics->drawScaledBitmap(m, (200 - offset) + i * 18, 1, 0.5, 0.5);
-        
-        if (i == battleParams->currSequencePos && curr < 3) {
-            pd->graphics->fillRect((199 - offset) + i * 18, 0, 18, 18, kColorXOR);
-        }
-    }
-}
-
-void drawFillHealthbar(PlaydateAPI* pd, int curr_health, int total_health) {
-    const int x = 101;
-    const int y = 189;
-    const int barWidth = 249;
-    const int barHeight = 19;
-    
-    if (curr_health < 0)
-        curr_health = 0;
-    if (curr_health > total_health)
-        curr_health = total_health;
-    
-    float healthRatio = (float)curr_health / (float)total_health;
-    int fillWidth = (int)(healthRatio * barWidth);
-    
-    pd->system->logToConsole("Fill width: %d, health: %d, maxHealth: %d", fillWidth, curr_health, total_health);
-
-    pd->graphics->fillRect(x, y, barWidth, barHeight, kColorWhite);
-    pd->graphics->fillRect(x, y, fillWidth, barHeight, kColorBlack);
-
-    int negX = x + fillWidth;
-    int negWidth = barWidth - fillWidth;
-    if (negWidth > 0) {
-        for (int py = y; py < y + barHeight; py++) {
-            for (int px = negX; px < negX + negWidth; px++) {
-                if ((px + py) % 2 == 0)
-                    pd->graphics->setPixel(px, py, kColorWhite);
-                else
-                    pd->graphics->setPixel(px, py, kColorBlack);
-            }
-        }
-    }
-    
-    char *healthText;
-    pd->system->formatString(&healthText, "%d/%d", curr_health, total_health);
-    
-    LCDBitmapDrawMode m = pd->graphics->setDrawMode(kColorXOR);
-    pd->graphics->drawText(healthText, strlen(healthText), kASCIIEncoding, 103, 191);
-    pd->graphics->setDrawMode(m);
-}
-
-
-void drawPlayerMenu(BattleParams* battleParams, PlaydateAPI* pd) {
-    for (int i = 0; i < 4; i++) {
-        bool highlighted = (i == battleParams->menuIndex);
-        drawButton(pd, menuPositions[i][0], menuPositions[i][1],
-                   BUTTON_WIDTH, BUTTON_HEIGHT, menuOptions[i], highlighted);
-    }
-}
-
-static void shuffleSequence(int* sequence, int count) {
-    for (int i = count - 1; i > 0; i--) {
-        int j = rand() % (i + 1);
-        int temp = sequence[i];
-        sequence[i] = sequence[j];
-        sequence[j] = temp;
     }
 }
 
@@ -266,6 +108,7 @@ void handlePlayerMenu(BattleParams* battleParams, float dt) {
                         int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
                         LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 2);
                         pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
+                        battleParams->infoPlayer = NULL;
                         battleParams->state = PLAYER_SELECT_INFO;
                         break;
                     }
@@ -275,9 +118,15 @@ void handlePlayerMenu(BattleParams* battleParams, float dt) {
                     case 2:
                         battleParams->state = BATTLE_ESCAPE;
                         break;
-                    case 3:
+                    case 3: {
+                        LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 2);
+                        int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
+                        int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+                        pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
+                        battleParams->selectP = -1;
                         battleParams->state = PLAYER_MOVE;
                         break;
+                    }
                 }
                 battleParams->exit_menu = false;
                 return;
@@ -359,13 +208,14 @@ void handlePlayerSelectInfo(BattleParams* battleParams, float dt) {
         int oldSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
         int oldSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
         battleParams->state = PLAYER_TURN_INIT;
         return;
     }
-
+    
     Player* p = selectPlayer(battleParams, pd, true);
-    if (p != NULL) {
+    if (p != NULL && p != battleParams->infoPlayer) {
+        battleParams->infoPlayer = p;
+        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
         pd->graphics->drawBitmap(battleParams->character_info, 0, 156, kBitmapUnflipped); 
         drawFillHealthbar(pd, p->health, p->maxHealth);
         char *s;
@@ -460,6 +310,30 @@ void handlePlayerMove(BattleParams* battleParams) {
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
+    if(btn_pressed & kButtonB) {
+        battleParams->state = PLAYER_TURN_INIT;
+        int prevSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
+        int prevSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+        pd->graphics->fillRect(prevSelectX - 12, prevSelectY + 12, 8, 8, kColorWhite);
+        return;
+    }
+
+    if(btn_pressed & kButtonA) {
+        pd->system->logToConsole("A Button pressed, selectP: %d", battleParams->selectP);
+        if(battleParams->selectP == -1) {
+            for (int i = 0; i < NUM_PLAYERS; i++) {
+                Player* p = battleParams->chars[i];
+                if (p && p->fight_x == battleParams->selectX && p->fight_y == battleParams->selectY) {
+                    battleParams->selectP = i;
+                    pd->system->logToConsole("%d is selectP", i);
+                }
+            }
+        } else {
+            pd->system->logToConsole("No character selected now"); 
+            battleParams->selectP = -1;
+        }
+    }
+
     int dx = 0, dy = 0;
     getDirection(btn_pressed, &dx, &dy);
     if (!dx && !dy) return;
@@ -467,22 +341,27 @@ void handlePlayerMove(BattleParams* battleParams) {
     int newX = (battleParams->selectX + dx + 3) % 3;
     int newY = (battleParams->selectY + dy + 3) % 3;
 
-    for (int i = 0; i < NUM_PLAYERS; i++) {
-        if (i != battleParams->selectP && battleParams->chars[i] &&
-            battleParams->chars[i]->fight_x == newX && battleParams->chars[i]->fight_y == newY) {
-            return;
+
+    if(battleParams->selectP != -1) {
+        for (int i = 0; i < NUM_PLAYERS; i++) {
+            if (i != battleParams->selectP && battleParams->chars[i] &&
+                battleParams->chars[i]->fight_x == newX && battleParams->chars[i]->fight_y == newY) {
+                return;
+            }
         }
     }
 
     int prevSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
     int prevSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
-    pd->graphics->fillRect(prevSelectX - 1, prevSelectY - 1, 34, 34, kColorWhite);
     pd->graphics->fillRect(prevSelectX - 12, prevSelectY + 12, 8, 8, kColorWhite);
-
+    
     battleParams->selectX = newX;
     battleParams->selectY = newY;
-    battleParams->chars[battleParams->selectP]->fight_x = newX;
-    battleParams->chars[battleParams->selectP]->fight_y = newY;
+    if(battleParams->selectP != -1) {
+        pd->graphics->fillRect(prevSelectX - 1, prevSelectY - 1, 34, 34, kColorWhite);
+        battleParams->chars[battleParams->selectP]->fight_x = newX;
+        battleParams->chars[battleParams->selectP]->fight_y = newY;
+    }
     LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 2);
 
     int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];

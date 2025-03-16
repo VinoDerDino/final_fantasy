@@ -33,6 +33,7 @@
         "pd_api_sound.h": "c",
         "enemy.h": "c",
         "attack.h": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "string.h": "c"
     }
 }

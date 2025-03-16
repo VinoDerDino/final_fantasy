@@ -93,6 +93,7 @@ typedef struct {
     float passed_time;
     bool exit_menu;
     float menu_offset;
+    Player* infoPlayer;
 } BattleParams;
 
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams);
