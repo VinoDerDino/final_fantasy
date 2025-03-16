@@ -2,12 +2,12 @@
 
 inline void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, const char* text, bool highlighted) {
     pd->graphics->fillRect(x - BUTTON_OUTLINE_OFFSET, y - BUTTON_OUTLINE_OFFSET,
-    width + 2, height + 2, kColorWhite);
+    width + 4, height + 4, kColorWhite);
     pd->graphics->drawRect(x, y, width, height, kColorBlack);
     pd->graphics->drawText(text, strlen(text), kASCIIEncoding, x + BUTTON_TEXT_OFFSET_X, y + BUTTON_TEXT_OFFSET_Y);
     if (highlighted) {
-    pd->graphics->fillRect(x - BUTTON_OUTLINE_OFFSET, y - BUTTON_OUTLINE_OFFSET,
-        width + 2, height + 2, kColorXOR);
+        pd->graphics->fillRect(x - 1, y - 1,
+            width + 2, height + 2, kColorXOR);
     }
 }
 
@@ -26,15 +26,14 @@ bool drawAttackButtonAnimation(void* params, float dt) {
     Player* player = battleParams->chars[battleParams->activeP];
 
     bool finished = true;
-    const float speed = ANIMATION_SPEED;
 
     for (int i = 0; i < 4; i++) {
-        pd->graphics->fillRect(player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
-                               ATTACK_BTN_WIDTH, ATTACK_BTN_HEIGHT, kColorWhite);
+        pd->graphics->fillRect(player->attacks[i].rect_x - BUTTON_OUTLINE_OFFSET, (int)player->attacks[i].rect_y - BUTTON_OUTLINE_OFFSET,
+                               ATTACK_BTN_WIDTH + BUTTON_OUTLINE_OFFSET * 2, ATTACK_BTN_HEIGHT + BUTTON_OUTLINE_OFFSET * 2, kColorWhite);
 
         if ((int)player->attacks[i].rect_y > player->attacks[i].dest_y) {
             finished = false;
-            float newY = player->attacks[i].rect_y - (speed * dt);
+            float newY = player->attacks[i].rect_y - (ANIMATION_SPEED * dt);
             player->attacks[i].rect_y = (newY < player->attacks[i].dest_y) ?
                                         (float)player->attacks[i].dest_y : newY;
         }
@@ -44,6 +43,32 @@ bool drawAttackButtonAnimation(void* params, float dt) {
     }
     return finished;
 }
+
+bool drawAttackButtonAnimationReverse(void* params, float dt) {
+    BattleParams* battleParams = (BattleParams*)params;
+    PlaydateAPI* pd = battleParams->pd;
+    Player* player = battleParams->chars[battleParams->activeP];
+
+    bool finished = true;
+
+    for (int i = 0; i < 4; i++) {
+        pd->graphics->fillRect(player->attacks[i].rect_x - BUTTON_OUTLINE_OFFSET, (int)player->attacks[i].rect_y - BUTTON_OUTLINE_OFFSET,
+                               ATTACK_BTN_WIDTH + BUTTON_OUTLINE_OFFSET * 2, ATTACK_BTN_HEIGHT + BUTTON_OUTLINE_OFFSET * 2, kColorWhite);
+
+        if ((int)player->attacks[i].rect_y < player->attacks[i].dest_y) {  
+            finished = false;
+            float newY = player->attacks[i].rect_y + (ANIMATION_SPEED * dt);
+
+            player->attacks[i].rect_y = (newY > player->attacks[i].dest_y) ?
+                                        (float)player->attacks[i].dest_y : newY;
+        }
+
+        drawButton(pd, player->attacks[i].rect_x, (int)player->attacks[i].rect_y,
+                   ATTACK_BTN_WIDTH, ATTACK_BTN_HEIGHT, player->attacks[i].name, false);
+    }
+    return finished;
+}
+
 
 void drawGridLeft(PlaydateAPI* pd) {
     for (int i = 0; i < 3; i++) {

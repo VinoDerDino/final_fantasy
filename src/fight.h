@@ -19,7 +19,7 @@
 
 #define BUTTON_WIDTH         125
 #define BUTTON_HEIGHT        30
-#define BUTTON_OUTLINE_OFFSET 1
+#define BUTTON_OUTLINE_OFFSET 2
 #define BUTTON_TEXT_OFFSET_X 5
 #define BUTTON_TEXT_OFFSET_Y 7
 
@@ -40,6 +40,7 @@ extern const int menuPositions[4][2];
 inline void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, const char* text, bool highlighted);
 inline void getDirection(PDButtons btn_pressed, int* dx, int* dy);
 bool drawAttackButtonAnimation(void* params, float dt);
+bool drawAttackButtonAnimationReverse(void* params, float dt);
 void drawGridLeft(PlaydateAPI* pd);
 void drawGridRight(BattleParams* battleParams, PlaydateAPI* pd);
 void drawAttackOptions(BattleParams* battleParams, PlaydateAPI* pd);

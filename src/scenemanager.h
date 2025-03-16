@@ -29,6 +29,7 @@ typedef enum {
     PLAYER_MENU_EXIT,
     PLAYER_SELECT_INFO,
     PLAYER_ATTACK_SELECTION_ANIMATION,
+    PLAYER_ATTACK_SELECTION_ANIMATION_REVERSE,
     PLAYER_ATTACK_SELECTION,
     PLAYER_MOVE,
     PLAYER_SELECT_PLAYER,
@@ -91,7 +92,7 @@ typedef struct {
     int currSequencePos;
     BattleStates state;
     float passed_time;
-    bool exit_menu;
+    bool exit_menu, enter_menu;
     float menu_offset;
     Player* infoPlayer;
 } BattleParams;

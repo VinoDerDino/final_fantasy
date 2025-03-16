@@ -5,7 +5,29 @@ void handlePlayerMenu(BattleParams* battleParams, float dt) {
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
-    if (btn_pressed & kButtonA || battleParams->exit_menu) {
+    if (btn_pressed & kButtonA || battleParams->exit_menu || battleParams->enter_menu) {
+        if(battleParams->enter_menu) {
+            for (int i = 0; i < 4; i++) {
+                int x = menuPositions[i][0];
+                int y = menuPositions[i][1] + (int)(battleParams->menu_offset);
+                pd->graphics->fillRect(x - 2, y - 2, 129, 34, kColorWhite);
+            }
+            battleParams->menu_offset -= dt * 200.0f;
+            if (battleParams->menu_offset <= 0) {
+                battleParams->menu_offset = 0.0;
+                battleParams->enter_menu = false;
+            }
+            for (int i = 0; i < 4; i++) {
+                int x = menuPositions[i][0];
+                int y = menuPositions[i][1] + (int)(battleParams->menu_offset);
+                pd->graphics->drawRect(x, y, BUTTON_WIDTH, BUTTON_HEIGHT, kColorBlack);
+                pd->graphics->drawText(menuOptions[i], strlen(menuOptions[i]), kASCIIEncoding, x + BUTTON_TEXT_OFFSET_X, y + BUTTON_TEXT_OFFSET_Y);
+                if (i == battleParams->menuIndex) {
+                    pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
+                }
+            }
+            return;
+        }
         if (battleParams->exit_menu) {
             for (int i = 0; i < 4; i++) {
                 int x = menuPositions[i][0];
@@ -14,6 +36,14 @@ void handlePlayerMenu(BattleParams* battleParams, float dt) {
             }
             battleParams->menu_offset += dt * 200.0f;
             if (battleParams->menu_offset >= 180) {
+                Player* player = battleParams->chars[battleParams->activeP];
+                for (int j = 0; j < player->attack_count; j++) {
+                    int dest_x = (j % 2) ? 255 : 20;
+                    int dest_y = (j / 2) ? 200 : 160;
+                    player->attacks[j].rect_y = (float)(dest_y + 80);
+                    player->attacks[j].dest_y = dest_y;        
+                    player->attacks[j].rect_x = dest_x;
+                }
                 switch (battleParams->menuIndex) {
                     case 0: {
                         int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
@@ -74,6 +104,7 @@ void handlePlayerMenu(BattleParams* battleParams, float dt) {
 
         x = menuPositions[battleParams->menuIndex][0];
         y = menuPositions[battleParams->menuIndex][1];
+        pd->system->logToConsole("x: %d, y: %d", x, y);
         pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
     }
 }
@@ -153,15 +184,13 @@ void handlePlayerAttackSelection(BattleParams* battleParams, float dt) {
         Player* p = battleParams->chars[battleParams->activeP];
         handleAction(battleParams, battleParams->pd, p->attacks[battleParams->menuIndex]);
     } else if (btn_pressed & kButtonB) {
-        battleParams->state = PLAYER_TURN_INIT;
+        battleParams->enter_menu = true;
+        battleParams->state = PLAYER_ATTACK_SELECTION_ANIMATION_REVERSE;
         Player* player = battleParams->chars[battleParams->activeP];
-        player->sprite.frameTimer = 0.0;
-        player->sprite.currentFrame = 0;
         for (int j = 0; j < player->attack_count; j++) {
             int dest_x = (j % 2) ? 255 : 20;
             int dest_y = (j / 2) ? 200 : 160;
-            player->attacks[j].rect_y = (float)(dest_y + 80);
-            player->attacks[j].dest_y = dest_y;
+            player->attacks[j].dest_y = (dest_y + 80);
             player->attacks[j].rect_x = dest_x;
         }
     }

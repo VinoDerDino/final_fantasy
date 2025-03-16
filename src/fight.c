@@ -20,6 +20,7 @@ void battleOnEnter(void *params) {
     battleParams->state = PLAYER_TURN_INIT;
     battleParams->activeP = 0;
     battleParams->passed_time = 0.0f;
+    battleParams->menu_offset = 180.0f;
 
     for (int i = 0; i < NUM_PLAYERS; i++) {
         Player* player = battleParams->chars[i];
@@ -67,10 +68,9 @@ void battleUpdate(void* params, float dt) {
     switch (battleParams->state) {
         case PLAYER_TURN_INIT:
             battleParams->menuIndex = 0;
-            battleParams->menu_offset = 0.0;
             battleParams->exit_menu = false;
+            battleParams->enter_menu = true;
             battleParams->state = PLAYER_MENU;
-            drawPlayerMenu(battleParams, pd);
             break;
 
         case PLAYER_MENU:
@@ -85,6 +85,12 @@ void battleUpdate(void* params, float dt) {
             if (drawAttackButtonAnimation(battleParams, dt)) {
                 battleParams->state = PLAYER_ATTACK_SELECTION;
                 drawAttackOptions(battleParams, pd);
+            }
+            break;
+
+        case PLAYER_ATTACK_SELECTION_ANIMATION_REVERSE:
+            if(drawAttackButtonAnimationReverse(battleParams, dt)) {
+                battleParams->state = PLAYER_TURN_INIT;
             }
             break;
 
