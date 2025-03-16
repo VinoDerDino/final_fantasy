@@ -14,7 +14,6 @@ void overworldEnter(void* params) {
 
     pd->graphics->setDrawOffset(-camera->x, -camera->y);
     pd->graphics->clear(kColorWhite);
-    pd->system->logToConsole("New Scene Overworld");
 
     overworldDraw(params);
 }
@@ -131,7 +130,6 @@ void handleInfoOverview(void* params, float dt) {
 
     if (btn_pressed & kButtonA) {
         worldParams->check_info = false;
-        pd->system->logToConsole("Switched back to normal view");
         return;
     }
 
@@ -193,7 +191,6 @@ void overworldUpdate(void* params, float dt) {
             player->sprite.y = player->movement.targetY;
             player->movement.justFinished = 1;
             if(checkForFight(player, world)) {
-                pd->system->logToConsole("Fight triggered!");
                 BattleParams* battleParams = (BattleParams*)malloc(sizeof(BattleParams));
                 if (battleParams != NULL) {
                     battleParams->chars[0] = player;
@@ -220,7 +217,6 @@ void overworldUpdate(void* params, float dt) {
         pd->system->getButtonState(&btn_const, &btn_pressed, NULL);
         if (btn_pressed & kButtonA) {
             worldParams->check_info = true;
-            pd->system->logToConsole("Switched back to info view");
             worldParams->selectX = player->sprite.x;
             worldParams->selectY = player->sprite.y;
             return;

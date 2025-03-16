@@ -14,7 +14,6 @@ void handlePlayerMenu(BattleParams* battleParams, float dt) {
             }
             battleParams->menu_offset += dt * 200.0f;
             if (battleParams->menu_offset >= 180) {
-                pd->system->logToConsole("Switching now");
                 switch (battleParams->menuIndex) {
                     case 0: {
                         int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
@@ -108,7 +107,6 @@ void handlePlayerSelectInfo(BattleParams* battleParams, float dt) {
 void handleAction(BattleParams* battleParams, PlaydateAPI* pd, Attack attack) {
     switch (attack.type) {
         case BASIC_ATTACK:
-            // Logik für Basic Attack
             break;
 
         case PIERCING_ATTACK:
@@ -187,17 +185,14 @@ void handlePlayerMove(BattleParams* battleParams) {
     }
 
     if(btn_pressed & kButtonA) {
-        pd->system->logToConsole("A Button pressed, selectP: %d", battleParams->selectP);
         if(battleParams->selectP == -1) {
             for (int i = 0; i < NUM_PLAYERS; i++) {
                 Player* p = battleParams->chars[i];
                 if (p && p->fight_x == battleParams->selectX && p->fight_y == battleParams->selectY) {
                     battleParams->selectP = i;
-                    pd->system->logToConsole("%d is selectP", i);
                 }
             }
         } else {
-            pd->system->logToConsole("No character selected now"); 
             battleParams->selectP = -1;
         }
     }
@@ -235,4 +230,13 @@ void handlePlayerMove(BattleParams* battleParams) {
     int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
     int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
     pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
+}
+
+void handleFightLoop(BattleParams* battleParams) {
+    battleParams->currSequencePos++;
+    if (battleParams->currSequencePos < 3) {
+        battleParams->state = PLAYER_MENU;
+    } else {
+        battleParams->state = ENEMY_TURN;
+    }
 }

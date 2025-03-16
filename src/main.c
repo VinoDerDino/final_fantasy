@@ -135,11 +135,8 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		o_params.select = newBitmap("images/select_img", pd);
 
 		b_params.chars[0] = &game.chars[0];
-		pd->system->logToConsole("Game player 0: %s, Params player 0: %s", game.chars[0].attacks[0].name, b_params.chars[0]->attacks[0].name);
 		b_params.chars[1] = &game.chars[1];
-		pd->system->logToConsole("Game player 1: %s, Params player 1: %s", game.chars[1].attacks[0].name, b_params.chars[1]->attacks[0].name);
 		b_params.chars[2] = &game.chars[2];
-		pd->system->logToConsole("Game player 2: %s, Params player 2: %s", game.chars[2].attacks[0].name, b_params.chars[2]->attacks[0].name);
 		b_params.pd = pd;
 		b_params.selectX = 0;
 		b_params.selectY = 0;

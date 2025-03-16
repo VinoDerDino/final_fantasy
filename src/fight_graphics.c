@@ -121,8 +121,6 @@ void drawFillHealthbar(PlaydateAPI* pd, int curr_health, int total_health) {
     
     float healthRatio = (float)curr_health / (float)total_health;
     int fillWidth = (int)(healthRatio * barWidth);
-    
-    pd->system->logToConsole("Fill width: %d, health: %d, maxHealth: %d", fillWidth, curr_health, total_health);
 
     pd->graphics->fillRect(x, y, barWidth, barHeight, kColorWhite);
     pd->graphics->fillRect(x, y, fillWidth, barHeight, kColorBlack);

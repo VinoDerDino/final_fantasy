@@ -61,5 +61,6 @@ void initializeSelectPositions(void);
 inline void getDirection(PDButtons btn_pressed, int* dx, int* dy);
 Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect);
 Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd);
+void shuffleSequence(int* sequence, int count);
 
 #endif

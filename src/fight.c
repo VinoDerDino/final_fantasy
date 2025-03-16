@@ -42,7 +42,7 @@ void battleOnEnter(void *params) {
     for (int i = 0; i < count; i++) {
         battleParams->sequence[i] = i;
     }
-    shuffleSequence(battleParams->sequence, count);
+    shuffleSequence(battleParams->sequence, count); 
 
     battleParams->currSequencePos = 0;
     while(battleParams->sequence[battleParams->currSequencePos] >= 3) {
@@ -83,7 +83,6 @@ void battleUpdate(void* params, float dt) {
 
         case PLAYER_ATTACK_SELECTION_ANIMATION:
             if (drawAttackButtonAnimation(battleParams, dt)) {
-                pd->system->logToConsole("Attack Selection now");
                 battleParams->state = PLAYER_ATTACK_SELECTION;
                 drawAttackOptions(battleParams, pd);
             }

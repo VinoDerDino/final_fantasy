@@ -6,7 +6,6 @@ void invOnEnter(void* params) {
     PlaydateAPI* pd = invParams->pd;
 
     pd->graphics->clear(kColorWhite);
-    pd->system->logToConsole("New Scene Inventory");
 }
 
 void invOnExit(void* params) {
@@ -31,17 +30,14 @@ void invUpdate(void* params, float dt) {
     }
 
     if(crankChange != 0) {
-        pd->system->logToConsole("Crank change: %.2f", (double)crankChange);
         inv->curr_pos += (int)round(crankChange);
         if(inv->curr_pos < 0) {
             inv->curr_pos = 0;
         } else if(inv->curr_pos >= inv->count) {
             inv->curr_pos = inv->count - 1;
         }
-        pd->system->logToConsole("New inv pos: %d", inv->curr_pos);
     }
 
-    // invOnEnter(params); // Removed to prevent unnecessary UI redraw
     invDraw(params);
 }
 
