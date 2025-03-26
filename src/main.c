@@ -149,6 +149,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		b_params.enemies[0] = enemies[0];
 		b_params.enemies[1] = enemies[1];
 		b_params.enemies[2] = enemies[2];
+		b_params.infoPlayer = NULL;
 
 		manager.pendingSceneChange = PENDING;
 
