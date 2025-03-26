@@ -39,6 +39,13 @@ void battleOnEnter(void *params) {
         }
     }
 
+    for(int i = 0; i < battleParams->countMonsters; i++) {
+        Enemy* e = &battleParams->enemies[i];
+        e->fight_x = (int)(i / 3) + 3;
+        e->fight_y = i % 3;
+        pd->system->logToConsole("Enemy %d; X: %d, Y: %d", i, e->fight_x, e->fight_y);
+    }
+
     const int count = 3 + battleParams->countMonsters;
     for (int i = 0; i < count; i++) {
         battleParams->sequence[i] = i;
@@ -89,8 +96,9 @@ void battleUpdate(void* params, float dt) {
             break;
 
         case PLAYER_ATTACK_SELECTION_ANIMATION_REVERSE:
+            pd->system->logToConsole("REVERSE ATTACK SELECTION ANIMATION");
             if(drawAttackButtonAnimationReverse(battleParams, dt)) {
-                battleParams->state = PLAYER_TURN_INIT;
+                battleParams->state = battleParams->nextState;
             }
             break;
 
@@ -114,7 +122,23 @@ void battleUpdate(void* params, float dt) {
             handleFightLoop(battleParams);
             break;
 
+        case PLAYER_SELECT_TARGET_ENEMY:
+            handlePlayerSelectTargetEnemy(battleParams);
+            break;
+
+        case PLAYER_SELECT_TARGET_ALLY:
+            handlePlayerSelectTargetAlly(battleParams);
+            break;
+
+        case ASSERT_ATTACK:
+            assertAction(battleParams);
+            break;
+
         case PLAYER_SELECT_ENEMY:
+            break;
+
+        case ENEMY_TURN:
+            battleParams->state = PLAYER_TURN_INIT;
             break;
         default:
             break;

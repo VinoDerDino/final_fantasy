@@ -55,12 +55,17 @@ void handlePlayerAttackSelection(BattleParams* battleParams, float dt);
 void handleFightLoop(BattleParams* battleParams);
 void handleBattleEscape(BattleParams* battleParams);
 void handlePlayerMove(BattleParams* battleParams);
+void handlePlayerSelectTargetAlly(BattleParams *battleParams);
+void handlePlayerSelectTargetEnemy(BattleParams *battleParams);
+void assertAction(BattleParams *battleParams);
 
 //helper functions
+int attackEnemy(Enemy *e, Attack attack);
 void initializeSelectPositions(void);
 void getDirection(PDButtons btn_pressed, int* dx, int* dy);
 Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect);
-Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd);
+Enemy* getEnemyAtPos(BattleParams* battleParams, int selectX, int selectY);
+Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect);
 void shuffleSequence(int* sequence, int count);
 
 #endif

@@ -60,7 +60,6 @@ bool drawAttackButtonAnimationReverse(void* params, float dt) {
     return finished;
 }
 
-
 void drawGridLeft(PlaydateAPI* pd) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -77,11 +76,15 @@ void drawGridRight(BattleParams* battleParams, PlaydateAPI* pd) {
             int xPos = GRID_RIGHT_START_X - i * GRID_HORIZONTAL_SPACING - j * GRID_DIAGONAL_OFFSET;
             int yPos = GRID_RIGHT_START_Y - j * GRID_VERTICAL_SPACING;
             pd->graphics->drawRect(xPos, yPos, GRID_CELL_SIZE, GRID_CELL_SIZE, kColorBlack);
-            if (i == 1) {
-                LCDBitmap *m = pd->graphics->getTableBitmap(battleParams->monsters, battleParams->enemies[j].id);
-                pd->graphics->drawBitmap(m, xPos + 2, yPos + 2, kBitmapUnflipped);
-            }
         }
+    }
+    for(int i = 0; i < battleParams->countMonsters; i++) {
+        Enemy e = battleParams->enemies[i];
+        int xPos = GRID_RIGHT_START_X - ((e.fight_x - 3) + 1) * GRID_HORIZONTAL_SPACING - (e.fight_y) * GRID_DIAGONAL_OFFSET;
+        int yPos = GRID_RIGHT_START_Y - (e.fight_y) * GRID_VERTICAL_SPACING;
+        pd->system->logToConsole("Drawin Enemy %d at x: %d, y: %d", i, xPos, yPos);
+        LCDBitmap *m = pd->graphics->getTableBitmap(battleParams->monsters, e.id);
+        pd->graphics->drawBitmap(m, xPos + 2, yPos + 2, kBitmapUnflipped);
     }
 }
 

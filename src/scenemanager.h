@@ -23,7 +23,8 @@ void battleOnExit(void* params);
 void battleUpdate(void* params, float dt);
 void battleDraw(void* params);
 
-typedef enum {
+typedef enum
+{
     PLAYER_TURN_INIT,
     PLAYER_MENU,
     PLAYER_MENU_EXIT,
@@ -33,8 +34,11 @@ typedef enum {
     PLAYER_ATTACK_SELECTION,
     PLAYER_MOVE,
     PLAYER_SELECT_PLAYER,
-    FIGHT_LOOP,
     PLAYER_SELECT_ENEMY,
+    PLAYER_SELECT_TARGET_ALLY,
+    PLAYER_SELECT_TARGET_ENEMY,
+    ASSERT_ATTACK,
+    FIGHT_LOOP,
     ENEMY_TURN,
     BATTLE_ESCAPE
 } BattleStates;
@@ -91,10 +95,12 @@ typedef struct {
     int sequence[6];
     int currSequencePos;
     BattleStates state;
+    BattleStates nextState;
     float passed_time;
     bool exit_menu, enter_menu;
     float menu_offset;
     Player* infoPlayer;
+    Attack currentAttack;
 } BattleParams;
 
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams);
