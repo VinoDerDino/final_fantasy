@@ -2,6 +2,7 @@
 #define ENEMY_H_
 
 #include "sprite.h"
+#include "attack.h"
 
 typedef enum {
     STANDARD,
@@ -25,11 +26,10 @@ typedef struct {
     int lvl;
     int attackCount;
     AttackEnemy* attacks;
+    int fight_x, fight_y;
+    AttackType resistenceType;
 } Enemy;
 
 extern Enemy enemies[];
-
-int dealDamage(Enemy e);
-void recieveDamage(Enemy* e, int dmg);
 
 #endif
