@@ -193,15 +193,15 @@ void overworldUpdate(void* params, float dt) {
             if(checkForFight(player, world)) {
                 BattleParams* battleParams = (BattleParams*)malloc(sizeof(BattleParams));
                 if (battleParams != NULL) {
-                    battleParams->chars[0] = player;
-                    battleParams->chars[1] = player;
-                    battleParams->chars[2] = player;
+                    battleParams->players[0] = player;
+                    battleParams->players[1] = player;
+                    battleParams->players[2] = player;
                     battleParams->pd = pd;
                     battleParams->selectX = 0;
                     battleParams->selectY = 0;
-                    battleParams->select = newBitmapTable("images/select", pd);
-                    battleParams->monsters = newBitmapTable("images/monsters", pd);
-                    battleParams->countMonsters = 3;
+                    battleParams->selectorIcons = newBitmapTable("images/select", pd);
+                    battleParams->enemySprites = newBitmapTable("images/monsters", pd);
+                    battleParams->enemyCount = 3;
                     battleParams->enemies[0] = enemies[0];
                     battleParams->enemies[1] = enemies[0];
                     battleParams->enemies[2] = enemies[0];

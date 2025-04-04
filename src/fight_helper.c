@@ -10,6 +10,9 @@ int attackEnemy(Enemy *e, Attack attack) {
         totalDamage -= e->defense;
     }
     e->hp -= totalDamage;
+    if(e->hp <= 0) {
+        e->isAlive = false;
+    }
     return totalDamage;
 }
 
@@ -19,27 +22,6 @@ void shuffleSequence(int* sequence, int count) {
         int temp = sequence[i];
         sequence[i] = sequence[j];
         sequence[j] = temp;
-    }
-}
-
-void initializeSelectPositions(void) {
-    const int offset = (GRID_CELL_SIZE - 32) / 2;
-    for (int x = 0; x < GRID_SIZE; x++) {
-        for (int y = 0; y < GRID_SIZE; y++) {
-            if (y > 2) {
-                selectPositions[x][y][0] = (x < 3) ? 20 : 255;
-                selectPositions[x][y][1] = (y == 3) ? 200 : 160;
-            } else {
-                if (x < 3) {
-                    selectPositions[x][y][0] = 14 + x * GRID_HORIZONTAL_SPACING + y * GRID_DIAGONAL_OFFSET + offset;
-                    selectPositions[x][y][1] = 110 - y * GRID_VERTICAL_SPACING + offset;
-                } else {
-                    int rightCol = x - 3;
-                    selectPositions[x][y][0] = 302 + rightCol * GRID_HORIZONTAL_SPACING - y * GRID_DIAGONAL_OFFSET + offset;
-                    selectPositions[x][y][1] = 110 - y * GRID_VERTICAL_SPACING + offset;
-                }
-            }
-        }
     }
 }
 
@@ -59,25 +41,25 @@ Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect)
     int dx = 0, dy = 0;
     getDirection(btn_pressed, &dx, &dy);
 
-    if (dx || dy) {
+    if (dy) {
         int oldSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
         int oldSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
-        battleParams->selectX = (battleParams->selectX + dx + 3) % 3;
+        battleParams->selectX = 0;
         battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
         pd->system->logToConsole("X: %d, Y:%d", battleParams->selectX, battleParams->selectY);
     
         int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
         int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
-        LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 2);
+        LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
         pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
         pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
     }
 
     if ((btn_pressed & kButtonA) || onSelect) {
         for (int i = 0; i < NUM_PLAYERS; i++) {
-            Player* p = battleParams->chars[i];
-            if (p && p->fight_x == battleParams->selectX && p->fight_y == battleParams->selectY) {
+            Player* p = battleParams->players[i];
+            if (p && p->fight_y == battleParams->selectY) {
                 return p;
             }
         }
@@ -87,9 +69,9 @@ Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect)
 
 Enemy* getEnemyAtPos(BattleParams* battleParams, int selectX, int selectY) {
 
-    for(int i = 0; i < battleParams->countMonsters; i++) {
+    for(int i = 0; i < battleParams->enemyCount; i++) {
         Enemy* e = &battleParams->enemies[i];
-        if(e->hp <= 0) continue;
+        // if(e->hp <= 0) continue;
         if(e->fight_x == selectX && e->fight_y == selectY) {
             return e;
         }
@@ -108,20 +90,20 @@ Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect) {
         int oldSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
         int oldSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
-        battleParams->selectX = (battleParams->selectX + dx + 3) % 3;
+        battleParams->selectX = 1 + ((battleParams->selectX - 1 + dx) % 2);
         battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
         pd->system->logToConsole("X: %d, Y:%d", battleParams->selectX, battleParams->selectY);
     
         int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
         int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
-        LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->select, 2);
+        LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
         pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
         pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
     }
 
     if ((btn_pressed & kButtonA) || onSelect) {
-        for (int i = 3; i < NUM_PLAYERS + battleParams->countMonsters; i++) {
-            Enemy* e = battleParams->chars[i];
+        for (int i = 3; i < NUM_PLAYERS + battleParams->enemyCount; i++) {
+            Enemy* e = &battleParams->enemies[i];
             if (e && e->fight_x == battleParams->selectX && e->fight_y == battleParams->selectY) {
                 return e;
             }

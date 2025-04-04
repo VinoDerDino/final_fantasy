@@ -9,7 +9,7 @@
 #include "scenemanager.h"
 
 #define GRID_CELL_SIZE 36
-#define GRID_SIZE 5
+#define GRID_SIZE 3
 #define ATTACK_BTN_WIDTH  125
 #define ATTACK_BTN_HEIGHT 30
 #define GRID_LEFT_START_X 14
@@ -46,6 +46,7 @@ void drawAttackOptions(BattleParams* battleParams, PlaydateAPI* pd);
 void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd);
 void drawFillHealthbar(PlaydateAPI* pd, int curr_health, int total_health);
 void drawPlayerMenu(BattleParams* battleParams, PlaydateAPI* pd);
+void drawActionAndTargetTooltips(BattleParams* battleParams, PlaydateAPI* pd);
 
 //logic functions
 void handlePlayerMenu(BattleParams* battleParams, float dt);
@@ -61,7 +62,6 @@ void assertAction(BattleParams *battleParams);
 
 //helper functions
 int attackEnemy(Enemy *e, Attack attack);
-void initializeSelectPositions(void);
 void getDirection(PDButtons btn_pressed, int* dx, int* dy);
 Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect);
 Enemy* getEnemyAtPos(BattleParams* battleParams, int selectX, int selectY);

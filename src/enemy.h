@@ -20,6 +20,7 @@ typedef struct {
     const char* name;
     int id;
     int hp;
+    bool isAlive;
     int attack;
     int defense;
     int resistence;

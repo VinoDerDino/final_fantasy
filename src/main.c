@@ -69,7 +69,6 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[0].inventory.curr_pos = 0;
 		game.chars[0].movement = (PlayerMovement){0};
 		game.chars[0].dir = 0;
-		game.chars[0].fight_x = 1;
 		game.chars[0].fight_y = 1;
 		game.chars[0].attacks[0] = knight_attacks[0];
 		game.chars[0].attacks[1] = knight_attacks[1];
@@ -85,7 +84,6 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[1].inventory.curr_pos = 0;
 		game.chars[1].movement = (PlayerMovement){0};
 		game.chars[1].dir = 0;
-		game.chars[1].fight_x = 1;
 		game.chars[1].fight_y = 0;
 		game.chars[1].attacks[0] = mage_attacks[0];
 		game.chars[1].attacks[1] = mage_attacks[1];
@@ -101,7 +99,6 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[2].inventory.curr_pos = 0;
 		game.chars[2].movement = (PlayerMovement){0};
 		game.chars[2].dir = 0;
-		game.chars[2].fight_x = 1;
 		game.chars[2].fight_y = 2;
 		game.chars[2].attacks[0] = hunter_attacks[0];
 		game.chars[2].attacks[1] = hunter_attacks[1];
@@ -134,22 +131,30 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		o_params.camera.maxY = 20 * 32;
 		o_params.select = newBitmap("images/select_img", pd);
 
-		b_params.chars[0] = &game.chars[0];
-		b_params.chars[1] = &game.chars[1];
-		b_params.chars[2] = &game.chars[2];
 		b_params.pd = pd;
-		b_params.selectX = 0;
-		b_params.selectY = 0;
-		b_params.character_info = newBitmap("images/characterinfo", pd);
-		b_params.character_info_offset = 84;
-		b_params.select = newBitmapTable("images/select", pd);
-		b_params.monsters = newBitmapTable("images/monsters", pd);
-		b_params.state = PLAYER_MENU;
-		b_params.countMonsters = 3;
+		b_params.players[0] = &game.chars[0];
+		b_params.players[1] = &game.chars[1];
+		b_params.players[2] = &game.chars[2];
 		b_params.enemies[0] = enemies[0];
 		b_params.enemies[1] = enemies[1];
 		b_params.enemies[2] = enemies[2];
-		b_params.infoPlayer = NULL;
+		b_params.enemyCount = 3;
+		b_params.currentState = PLAYER_MENU;
+		b_params.nextState = PLAYER_MENU;
+		b_params.currSequencePos = 0;
+		b_params.selectX = 0;
+		b_params.selectY = 0;
+		b_params.selectPlayerIndex = -1;
+		b_params.activePlayerIndex = 0;
+		b_params.menuIndex = 0;
+		b_params.exitMenu = false;
+		b_params.enterMenu = false;
+		b_params.menuOffset = 0.0;
+		b_params.characterInfoBitmap = newBitmap("images/characterinfo", pd);
+		b_params.characterInfoOffset = 84;
+		b_params.selectorIcons = newBitmapTable("images/select", pd);
+		b_params.enemySprites = newBitmapTable("images/monsters", pd);
+		b_params.infoTargetPlayer = NULL;
 
 		manager.pendingSceneChange = PENDING;
 

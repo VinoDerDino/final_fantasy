@@ -40,6 +40,7 @@ typedef enum
     ASSERT_ATTACK,
     FIGHT_LOOP,
     ENEMY_TURN,
+    REDRAW_ENEMIES,
     BATTLE_ESCAPE
 } BattleStates;
 
@@ -83,24 +84,46 @@ typedef struct {
 } InventoryParams;
 
 typedef struct {
-    Player* chars[3];
+    // Core
     PlaydateAPI* pd;
-    LCDBitmap* character_info;
-    LCDBitmapTable* select;
-    LCDBitmapTable* monsters;
-    int selectX, selectY, selectP, activeP, menuIndex;
-    int character_info_offset;
-    int countMonsters;
+
+    // Player & Enemies
+    Player* players[3];
     Enemy enemies[3];
-    int sequence[6];
-    int currSequencePos;
-    BattleStates state;
+    int enemyCount;
+
+    // Battle Flow Control
+    BattleStates currentState;
     BattleStates nextState;
-    float passed_time;
-    bool exit_menu, enter_menu;
-    float menu_offset;
-    Player* infoPlayer;
+    int sequence[6];            // Turn order sequence
+    int currSequencePos;
+
+    // Selection & Input
+    int selectX, selectY;       // Grid selection
+    int selectPlayerIndex;      // Selected player
+    int activePlayerIndex;      // Whose turn it is
+    int menuIndex;              // Current menu position
+
+    // Menu/UI Flags
+    bool exitMenu;
+    bool enterMenu;
+    float menuOffset;
+
+    // Visuals
+    LCDBitmap* characterInfoBitmap;
+    int characterInfoOffset;
+    LCDBitmapTable* selectorIcons;
+    LCDBitmapTable* enemySprites;
+
+    // Player Action Info
     Attack currentAttack;
+    Player* infoTargetPlayer;
+
+    // State Timing
+    float elapsedTime;
+
+    // Redraw Flags
+    bool triggerEnemyRedraw;
 } BattleParams;
 
 void changeScene(Scenemanager *manager, Scenetypes type, void* sceneParams);

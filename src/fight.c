@@ -2,7 +2,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-int selectPositions[GRID_SIZE][GRID_SIZE][2];
+int selectPositions[GRID_SIZE][GRID_SIZE][2] = {
+    { {  64,112 }, {  76, 70 }, {  88, 28 } },
+    { { 304,112 }, { 292, 70 }, { 280, 28 } },
+    { { 352,112 }, { 340, 70 }, { 328, 28 } }
+};
+
 const char* menuOptions[4] = {"Show Infos", "Attack", "Escape", "Move Player"};
 const int menuPositions[4][2] = {
     {20, 160},
@@ -15,21 +20,23 @@ void battleOnEnter(void *params) {
     BattleParams* battleParams = (BattleParams*)params;
     PlaydateAPI* pd = battleParams->pd;
 
+    
     pd->graphics->clear(kColorWhite);
-
-    battleParams->state = PLAYER_TURN_INIT;
-    battleParams->activeP = 0;
-    battleParams->passed_time = 0.0f;
-    battleParams->menu_offset = 180.0f;
-
+    
+    battleParams->currentState = PLAYER_TURN_INIT;
+    battleParams->activePlayerIndex = 0;
+    battleParams->elapsedTime = 0.0f;
+    battleParams->menuOffset = 180.0f;
+    
+    
     for (int i = 0; i < NUM_PLAYERS; i++) {
-        Player* player = battleParams->chars[i];
+        Player* player = battleParams->players[i];
         player->sprite.frameTimer = 0.0;
         player->sprite.currentFrame = 0;
         for (int j = 0; j < player->attack_count; j++) {
             int dest_x = (j % 2) ? 255 : 20;
             int dest_y = (j / 2) ? 200 : 160;
-            if (i == battleParams->activeP) {
+            if (i == battleParams->activePlayerIndex) {
                 player->attacks[j].rect_y = (float)(dest_y + 80);
                 player->attacks[j].dest_y = dest_y;
             } else {
@@ -38,26 +45,21 @@ void battleOnEnter(void *params) {
             player->attacks[j].rect_x = dest_x;
         }
     }
-
-    for(int i = 0; i < battleParams->countMonsters; i++) {
-        Enemy* e = &battleParams->enemies[i];
-        e->fight_x = (int)(i / 3) + 3;
-        e->fight_y = i % 3;
-        pd->system->logToConsole("Enemy %d; X: %d, Y: %d", i, e->fight_x, e->fight_y);
-    }
-
-    const int count = 3 + battleParams->countMonsters;
+    
+    
+    const int count = 3 + battleParams->enemyCount;
     for (int i = 0; i < count; i++) {
         battleParams->sequence[i] = i;
     }
     shuffleSequence(battleParams->sequence, count); 
-
+    
+    
     battleParams->currSequencePos = 0;
     while(battleParams->sequence[battleParams->currSequencePos] >= 3) {
         battleParams->currSequencePos = (battleParams->currSequencePos + 1) % count;
     }
+    
 
-    initializeSelectPositions();
     battleDraw(params);
 }
 
@@ -70,14 +72,16 @@ void battleUpdate(void* params, float dt) {
     BattleParams* battleParams = (BattleParams*)params;
     PlaydateAPI* pd = battleParams->pd;
 
-    battleParams->passed_time += dt;
 
-    switch (battleParams->state) {
+
+    battleParams->elapsedTime += dt;
+
+    switch (battleParams->currentState) {
         case PLAYER_TURN_INIT:
             battleParams->menuIndex = 0;
-            battleParams->exit_menu = false;
-            battleParams->enter_menu = true;
-            battleParams->state = PLAYER_MENU;
+            battleParams->exitMenu = false;
+            battleParams->enterMenu = true;
+            battleParams->currentState = PLAYER_MENU;
             break;
 
         case PLAYER_MENU:
@@ -90,15 +94,14 @@ void battleUpdate(void* params, float dt) {
 
         case PLAYER_ATTACK_SELECTION_ANIMATION:
             if (drawAttackButtonAnimation(battleParams, dt)) {
-                battleParams->state = PLAYER_ATTACK_SELECTION;
+                battleParams->currentState = PLAYER_ATTACK_SELECTION;
                 drawAttackOptions(battleParams, pd);
             }
             break;
 
         case PLAYER_ATTACK_SELECTION_ANIMATION_REVERSE:
-            pd->system->logToConsole("REVERSE ATTACK SELECTION ANIMATION");
             if(drawAttackButtonAnimationReverse(battleParams, dt)) {
-                battleParams->state = battleParams->nextState;
+                battleParams->currentState = battleParams->nextState;
             }
             break;
 
@@ -114,12 +117,24 @@ void battleUpdate(void* params, float dt) {
             Player* p = selectPlayer(battleParams, pd, false);
             if (p != NULL) {
                 drawAttackOptions(battleParams, pd);
-                battleParams->state = FIGHT_LOOP;
+                battleParams->currentState = FIGHT_LOOP;
             }
             break;
-        }
+        } 
         case FIGHT_LOOP:
+            if(battleParams->triggerEnemyRedraw) {
+                battleParams->triggerEnemyRedraw = false;
+                battleParams->currentState = REDRAW_ENEMIES;
+                battleParams->nextState = FIGHT_LOOP;
+                break;
+            }
             handleFightLoop(battleParams);
+            drawAttackSequence(battleParams, pd);
+            break;
+
+        case REDRAW_ENEMIES:
+            drawGridRight(battleParams, pd);
+            battleParams->currentState = battleParams->nextState;
             break;
 
         case PLAYER_SELECT_TARGET_ENEMY:
@@ -135,10 +150,11 @@ void battleUpdate(void* params, float dt) {
             break;
 
         case PLAYER_SELECT_ENEMY:
+            drawGridRight(battleParams, pd);
             break;
 
         case ENEMY_TURN:
-            battleParams->state = PLAYER_TURN_INIT;
+            battleParams->currentState = PLAYER_TURN_INIT;
             break;
         default:
             break;
@@ -146,12 +162,12 @@ void battleUpdate(void* params, float dt) {
 
     const int offset = (GRID_CELL_SIZE - 32) / 2;
     for (int i = 0; i < NUM_PLAYERS; i++) {
-        if (battleParams->chars[i]) {
-            int selectX = GRID_LEFT_START_X + battleParams->chars[i]->fight_x * GRID_HORIZONTAL_SPACING +
-                          battleParams->chars[i]->fight_y * GRID_DIAGONAL_OFFSET + offset;
-            int selectY = GRID_LEFT_START_Y - battleParams->chars[i]->fight_y * GRID_VERTICAL_SPACING + offset;
+        if (battleParams->players[i]) {
+            int selectX = GRID_LEFT_START_X + 1 * GRID_HORIZONTAL_SPACING +
+                          battleParams->players[i]->fight_y * GRID_DIAGONAL_OFFSET + offset;
+            int selectY = GRID_LEFT_START_Y - battleParams->players[i]->fight_y * GRID_VERTICAL_SPACING + offset;
             pd->graphics->fillRect(selectX - 1, selectY - 1, 34, 34, kColorWhite);
-            drawAnimatedSprite(&battleParams->chars[i]->sprite, pd, selectX, selectY, true, kBitmapUnflipped, dt);
+            drawAnimatedSprite(&battleParams->players[i]->sprite, pd, selectX, selectY, true, kBitmapUnflipped, dt);
         }
     }
 }
@@ -163,5 +179,6 @@ void battleDraw(void* params) {
     pd->graphics->clear(kColorWhite);
     drawGridLeft(pd);
     drawGridRight(battleParams, pd);
+    pd->system->logToConsole("DRAWN GRID RIGHT");
     drawAttackSequence(battleParams, pd);
 }
