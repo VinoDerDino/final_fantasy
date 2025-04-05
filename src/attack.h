@@ -5,8 +5,6 @@ typedef enum {
     SINGLE_TARGET,
     ROW,
     COLUMN,
-    AREA_ROW,
-    AREA_COL,
     AREA_ROW_COL,
 } AttackPattern;
 
@@ -23,8 +21,6 @@ typedef enum {
 typedef struct {
     const char* name;
     int dmg;
-    int rect_x, dest_y;
-    float rect_y;
     AttackType type;
     AttackPattern pattern;
 } Attack;

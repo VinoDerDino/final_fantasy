@@ -19,7 +19,6 @@ void drawAnimatedSprite(AnimatedSprite* sprite, PlaydateAPI* pd, int offset_x, i
     }
 
     sprite->frameTimer += dt;
-    // pd->system->logToConsole("DEBUG ANIMATED SPRITE: dt = %f, curr_frame: %d", sprite->frameTimer, sprite->currentFrame);
     if(sprite->frameTimer >= sprite->frameDelay) {
         sprite->currentFrame = (sprite->currentFrame + 1) % sprite->frameCount;
         sprite->frameTimer -= sprite->frameDelay;

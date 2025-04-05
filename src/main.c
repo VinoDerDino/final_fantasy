@@ -75,6 +75,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[0].attacks[2] = knight_attacks[2];
 		game.chars[0].attacks[3] = knight_attacks[3];
 		game.chars[0].attack_count = 4;
+		game.chars[0].isAlive = true;
 
 		game.chars[1].sprite = newAnimatedSprite("images/mage", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[1].inventory.count = 16;
@@ -90,6 +91,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[1].attacks[2] = mage_attacks[2];
 		game.chars[1].attacks[3] = mage_attacks[3];
 		game.chars[1].attack_count = 4;
+		game.chars[1].isAlive = true;
 
 		game.chars[2].sprite = newAnimatedSprite("images/hunter", pd, 0, 0, 32, 32, 4, 0.25);
 		game.chars[2].inventory.count = 16;
@@ -105,6 +107,7 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		game.chars[2].attacks[2] = hunter_attacks[2];
 		game.chars[2].attacks[3] = hunter_attacks[3];
 		game.chars[2].attack_count = 4;
+		game.chars[2].isAlive = true;
 
 		game.lastFrameTime = 0;
 
@@ -147,13 +150,13 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		b_params.selectPlayerIndex = -1;
 		b_params.activePlayerIndex = 0;
 		b_params.menuIndex = 0;
-		b_params.exitMenu = false;
-		b_params.enterMenu = false;
-		b_params.menuOffset = 0.0;
 		b_params.characterInfoBitmap = newBitmap("images/characterinfo", pd);
 		b_params.characterInfoOffset = 84;
 		b_params.selectorIcons = newBitmapTable("images/select", pd);
 		b_params.enemySprites = newBitmapTable("images/monsters", pd);
+		b_params.elapsedTimeText = 0.0f;
+		b_params.areaText = malloc(512);
+		b_params.textAreaBitmap = newBitmap("images/fight_text_area", pd);
 		b_params.infoTargetPlayer = NULL;
 
 		manager.pendingSceneChange = PENDING;

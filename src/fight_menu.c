@@ -5,106 +5,35 @@ void handlePlayerMenu(BattleParams* battleParams, float dt) {
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
-    if (btn_pressed & kButtonA || battleParams->exitMenu || battleParams->enterMenu) {
-        if(battleParams->enterMenu) {
-            for (int i = 0; i < 4; i++) {
-                int x = menuPositions[i][0];
-                int y = menuPositions[i][1] + (int)(battleParams->menuOffset);
-                pd->graphics->fillRect(x - 2, y - 2, 129, 34, kColorWhite);
+    if (btn_pressed & kButtonA) {
+        switch (battleParams->menuIndex) {
+            case 0:
+                battleParams->currentState = PLAYER_ATTACK_SELECTION;
+                drawAttackOptions(battleParams, pd);
+                break;
+            case 1: {
+                drawSelector(battleParams);
+                battleParams->infoTargetPlayer = NULL;
+                battleParams->currentState = PLAYER_SELECT_INFO;
+                break;
             }
-            battleParams->menuOffset -= dt * 200.0f;
-            if (battleParams->menuOffset <= 0) {
-                battleParams->menuOffset = 0.0;
-                battleParams->enterMenu = false;
+            case 2:
+                battleParams->currentState = BATTLE_ESCAPE;
+                break;
+            case 3: {
+                drawSelector(battleParams);
+                battleParams->selectPlayerIndex = -1;
+                battleParams->currentState = PLAYER_MOVE;
+                break;
             }
-            for (int i = 0; i < 4; i++) {
-                int x = menuPositions[i][0];
-                int y = menuPositions[i][1] + (int)(battleParams->menuOffset);
-                pd->graphics->drawRect(x, y, BUTTON_WIDTH, BUTTON_HEIGHT, kColorBlack);
-                pd->graphics->drawText(menuOptions[i], strlen(menuOptions[i]), kASCIIEncoding, x + BUTTON_TEXT_OFFSET_X, y + BUTTON_TEXT_OFFSET_Y);
-                if (i == battleParams->menuIndex) {
-                    pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
-                }
-            }
-            return;
         }
-        if (battleParams->exitMenu) {
-            for (int i = 0; i < 4; i++) {
-                int x = menuPositions[i][0];
-                int y = menuPositions[i][1] + (int)(battleParams->menuOffset);
-                pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorWhite);
-            }
-            battleParams->menuOffset += dt * 200.0f;
-            if (battleParams->menuOffset >= 180) {
-                Player* player = battleParams->players[battleParams->activePlayerIndex];
-                for (int j = 0; j < player->attack_count; j++) {
-                    int dest_x = (j % 2) ? 255 : 20;
-                    int dest_y = (j / 2) ? 200 : 160;
-                    player->attacks[j].rect_y = (float)(dest_y + 80);
-                    player->attacks[j].dest_y = dest_y;        
-                    player->attacks[j].rect_x = dest_x;
-                }
-                switch (battleParams->menuIndex) {
-                    case 0: {
-                        int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
-                        int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
-                        LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
-                        pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
-                        battleParams->infoTargetPlayer = NULL;
-                        battleParams->currentState = PLAYER_SELECT_INFO;
-                        break;
-                    }
-                    case 1:
-                        battleParams->currentState = PLAYER_ATTACK_SELECTION_ANIMATION;
-                        break;
-                    case 2:
-                        battleParams->currentState = BATTLE_ESCAPE;
-                        break;
-                    case 3: {
-                        LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
-                        int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
-                        int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
-                        pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
-                        battleParams->selectPlayerIndex = -1;
-                        battleParams->currentState = PLAYER_MOVE;
-                        break;
-                    }
-                }
-                battleParams->exitMenu = false;
-                return;
-            }
-
-            for (int i = 0; i < 4; i++) {
-                int x = menuPositions[i][0];
-                int y = menuPositions[i][1] + (int)(battleParams->menuOffset);
-                pd->graphics->drawRect(x, y, BUTTON_WIDTH, BUTTON_HEIGHT, kColorBlack);
-                pd->graphics->drawText(menuOptions[i], strlen(menuOptions[i]), kASCIIEncoding, x + BUTTON_TEXT_OFFSET_X, y + BUTTON_TEXT_OFFSET_Y);
-                if (i == battleParams->menuIndex) {
-                    pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
-                }
-            }
-        } else {
-            battleParams->exitMenu = true;
-        }
-        return;
     }
 
-    if (btn_pressed & (kButtonLeft | kButtonRight | kButtonUp | kButtonDown)) {
-        int x = menuPositions[battleParams->menuIndex][0];
-        int y = menuPositions[battleParams->menuIndex][1];
-        pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
-
-        int dx = 0, dy = 0;
-        getDirection(btn_pressed, &dx, &dy);
-        int col = battleParams->menuIndex % 2;
-        int row = battleParams->menuIndex / 2;
-        if (dx) col = 1 - col;
-        if (dy) row = 1 - row;
-        battleParams->menuIndex = row * 2 + col;
-
-        x = menuPositions[battleParams->menuIndex][0];
-        y = menuPositions[battleParams->menuIndex][1];
-        pd->graphics->fillRect(x - 1, y - 1, 127, 32, kColorXOR);
+    int dx = 0, dy = 0;
+    getDirection(btn_pressed, &dx, &dy); 
+    if (dx || dy) {
+        battleParams->menuIndex = (battleParams->menuIndex + dx + 2 * dy + 4) % 4;
+        drawPlayerMenu(battleParams, pd);
     }
 }
 
@@ -115,9 +44,9 @@ void handlePlayerSelectInfo(BattleParams* battleParams, float dt) {
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
     
     if (btn_pressed & kButtonB) {
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
-        int oldSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
-        int oldSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+        int oldSelectX, oldSelectY;
+        clearInfoArea(pd);
+        getGridPosition(battleParams->selectX, battleParams->selectY, &oldSelectX, &oldSelectY);
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
         battleParams->currentState = PLAYER_TURN_INIT;
         return;
@@ -129,7 +58,7 @@ void handlePlayerSelectInfo(BattleParams* battleParams, float dt) {
     }
     else if (p != battleParams->infoTargetPlayer) {
         battleParams->infoTargetPlayer = p;
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
+        clearInfoArea(pd);
         pd->graphics->drawBitmap(battleParams->characterInfoBitmap, 0, 156, kBitmapUnflipped);
         drawFillHealthbar(pd, p->health, p->maxHealth);
         char *s;
@@ -140,35 +69,44 @@ void handlePlayerSelectInfo(BattleParams* battleParams, float dt) {
 
 void handleAction(BattleParams* battleParams, PlaydateAPI* pd, Attack attack) {
     battleParams->currentAttack = attack;
-    pd->system->logToConsole("Handle Action");
-    battleParams->currentState = PLAYER_ATTACK_SELECTION_ANIMATION_REVERSE;
-    Player* player = battleParams->players[battleParams->activePlayerIndex];
-    for (int j = 0; j < player->attack_count; j++) {
-        int dest_x = (j % 2) ? 255 : 20;
-        int dest_y = (j / 2) ? 200 : 160;
-        player->attacks[j].dest_y = (dest_y + 80);
-        player->attacks[j].rect_x = dest_x;
-    }
     switch (attack.type) {
         case BASIC_ATTACK:
         case PIERCING_ATTACK:
         case FIRE_ATTACK:
         case WATER_ATTACK:
         case GROUND_ATTACK:
-        case DEBUFF_ARMOR:
-            battleParams->nextState = PLAYER_SELECT_TARGET_ENEMY;
+        case DEBUFF_ARMOR: {
+            battleParams->currentState = PLAYER_SELECT_TARGET_ENEMY;
+            int newSelectX, newSelectY;
+            getGridPosition(battleParams->selectX, battleParams->selectY, &newSelectX, &newSelectY);
+            for(int i = 0; i < battleParams->enemyCount; i++) {
+                if (battleParams->enemies[i].isAlive) {
+                    battleParams->selectX = battleParams->enemies[i].fight_x;
+                    battleParams->selectY = battleParams->enemies[i].fight_y;
+                    getGridPosition(battleParams->selectX, battleParams->selectY, &newSelectX, &newSelectY);
+                    break;
+                }
+            }
+            LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
+            pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
+            drawActionAndTargetTooltips(battleParams, pd);
             break;
-        case BUFF_HEAL:
-            battleParams->nextState = PLAYER_SELECT_TARGET_ALLY;
+        }
+        case BUFF_HEAL: {
+            battleParams->currentState = PLAYER_SELECT_TARGET_ALLY;
+            int newSelectX, newSelectY;
+            getGridPosition(battleParams->selectX, battleParams->selectY, &newSelectX, &newSelectY);
+            LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
+            pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
             break;
+        }
         default:
-            break;
+            break; 
     }
 }
 
 void assertAction(BattleParams *battleParams) {
-    battleParams->pd->system->logToConsole("Assert attack, pattern: %d", battleParams->currentAttack.pattern);
-    Enemy *e[4] = {NULL, NULL, NULL, NULL};
+    Enemy *e[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
 
     switch (battleParams->currentAttack.pattern) {
         case SINGLE_TARGET: {
@@ -187,31 +125,49 @@ void assertAction(BattleParams *battleParams) {
             e[2] = getEnemyAtPos(battleParams, battleParams->selectX, 2);
             break;
         }
-        case AREA_ROW: {
-            break;
-        }
-        case AREA_COL: {
-
-            break;
-        }
         case AREA_ROW_COL: {
-
+            e[0] = getEnemyAtPos(battleParams, 1, 0);
+            e[1] = getEnemyAtPos(battleParams, 1, 1);
+            e[2] = getEnemyAtPos(battleParams, 1, 2);
+            e[3] = getEnemyAtPos(battleParams, 2, 0);
+            e[4] = getEnemyAtPos(battleParams, 2, 1);
+            e[5] = getEnemyAtPos(battleParams, 2, 2);
             break;
         }
         default:
             break;
     }
 
-    for(int i = 0; i < 4; i++) {
-        if(e[i] == NULL) continue;
+    char *c = NULL;
+    for (int i = 0; i < 4; i++) {
+        if (e[i] == NULL) continue;
+        e[i]->hit = true;
         int dmg = attackEnemy(e[i], battleParams->currentAttack);
-        if(!e[i]->isAlive) {
-            battleParams->pd->system->logToConsole("Enemy %d is dead!", i);
+        char *newString;
+        if (!e[i]->isAlive) {
             battleParams->triggerEnemyRedraw = true;
+            battleParams->pd->system->formatString(&newString, "%s'%s' took %d damage and died!\n", c ? c : "", e[i]->name, dmg);
+        } else {
+            battleParams->pd->system->formatString(&newString, "%s'%s' took %d damage!\n", c ? c : "", e[i]->name, dmg);
         }
-        battleParams->pd->system->logToConsole("Damage to enemy %s: %d, now has %d hp!", e[i]->name, dmg, e[i]->hp);
+    
+        if (c) {
+            battleParams->pd->system->realloc(c, 0);
+        }
+        c = newString; 
     }
-    battleParams->currentState = FIGHT_LOOP;
+    if(c != NULL) {
+        strcpy(battleParams->areaText, c);
+    } else {
+        strcpy(battleParams->areaText, "Missed!");
+    }
+    battleParams->pd->system->realloc(c, 0);
+    battleParams->elapsedEnemiesHitTime = 0.0f;
+    battleParams->enemyHitLastOffsetChangeTime = -1.0f;
+    battleParams->elapsedTimeText = 0.0f;
+    battleParams->enemyHitOffsetX = 0;
+    battleParams->enemyHitOffsetY = 0;
+    battleParams->currentState = ENEMIES_HIT;
 }
 
 void handlePlayerSelectTargetAlly(BattleParams *battleParams) {
@@ -219,29 +175,29 @@ void handlePlayerSelectTargetAlly(BattleParams *battleParams) {
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
     
-    if(btn_pressed & kButtonA) {
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
-        battleParams->currentState = ASSERT_ATTACK;
-    } else if(btn_pressed & kButtonB) {
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
-        battleParams->currentState = PLAYER_ATTACK_SELECTION;
+    if(btn_pressed & (kButtonA | kButtonB)) {
+        clearInfoArea(pd);
+        int oldSelectX, oldSelectY;
+        getGridPosition(battleParams->selectX, battleParams->selectY, &oldSelectX, &oldSelectY);
+        pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
+        battleParams->currentState = (btn_pressed & kButtonA) ? ASSERT_ATTACK : PLAYER_ATTACK_SELECTION;
     }
 
     int dx = 0, dy = 0;
     getDirection(btn_pressed, &dx, &dy);
     
     if (dx || dy) {
-        int oldSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
-        int oldSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+        int oldSelectX, oldSelectY;
+        getGridPosition(battleParams->selectX, battleParams->selectY, &oldSelectX, &oldSelectY);
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
         battleParams->selectX = 0;
         battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
 
-        int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
-        int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+        int newSelectX, newSelectY;
+        getGridPosition(battleParams->selectX, battleParams->selectY, &newSelectX, &newSelectY);
         LCDBitmap *s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
         pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
+        clearInfoArea(pd);
         drawActionAndTargetTooltips(battleParams, pd);
     }
 }
@@ -251,28 +207,41 @@ void handlePlayerSelectTargetEnemy(BattleParams *battleParams) {
     PDButtons btn_pressed;
     pd->system->getButtonState(NULL, &btn_pressed, NULL);
 
-    if(btn_pressed & kButtonA) {
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
-        battleParams->currentState = ASSERT_ATTACK;
-    } else if(btn_pressed & kButtonB) {
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
-        battleParams->currentState = PLAYER_ATTACK_SELECTION;
+    int oldSelectX, oldSelectY;
+    if (btn_pressed & (kButtonA | kButtonB)) {
+        clearInfoArea(pd);
+        getGridPosition(battleParams->selectX, battleParams->selectY, &oldSelectX, &oldSelectY);
+        pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
+        
+        if(btn_pressed & kButtonA) {
+            battleParams->currentState = ASSERT_ATTACK;
+        } else {
+            battleParams->currentState = PLAYER_ATTACK_SELECTION;
+            drawAttackOptions(battleParams, battleParams->pd);
+        }
+        return;
     }
 
     int dx = 0, dy = 0;
     getDirection(btn_pressed, &dx, &dy); 
     if (dx || dy) {
-        int oldSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
-        int oldSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+        getGridPosition(battleParams->selectX, battleParams->selectY, &oldSelectX, &oldSelectY);
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
-        battleParams->selectX = 1 + ((battleParams->selectX - 1 + dx) % 2);
-        battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
-    
-        int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
-        int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
+
+        battleParams->selectX += dx;
+        if (battleParams->selectX < 1) battleParams->selectX = 2;
+        if (battleParams->selectX > 2) battleParams->selectX = 1;
+
+        battleParams->selectY += dy;
+        if (battleParams->selectY < 0) battleParams->selectY = 2;
+        if (battleParams->selectY > 2) battleParams->selectY = 0;
+
+        int newSelectX, newSelectY;
+        getGridPosition(battleParams->selectX, battleParams->selectY, &newSelectX, &newSelectY);
         LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
         pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
+
+        clearInfoArea(pd);
         drawActionAndTargetTooltips(battleParams, pd);
     }
 }
@@ -293,19 +262,10 @@ void handlePlayerAttackSelection(BattleParams* battleParams, float dt) {
     }
 
     if (btn_pressed & kButtonA) {
-        Player* p = battleParams->players[battleParams->activePlayerIndex];
-        handleAction(battleParams, battleParams->pd, p->attacks[battleParams->menuIndex]);
+        battleParams->currentState = HANDLE_ACTION;
     } else if (btn_pressed & kButtonB) {
-        battleParams->enterMenu = true;
-        battleParams->currentState = PLAYER_ATTACK_SELECTION_ANIMATION_REVERSE;
-        battleParams->nextState = PLAYER_TURN_INIT;
-        Player* player = battleParams->players[battleParams->activePlayerIndex];
-        for (int j = 0; j < player->attack_count; j++) {
-            int dest_x = (j % 2) ? 255 : 20;
-            int dest_y = (j / 2) ? 200 : 160;
-            player->attacks[j].dest_y = (dest_y + 80);
-            player->attacks[j].rect_x = dest_x;
-        }
+        battleParams->currentState = PLAYER_TURN_INIT;
+        drawPlayerMenu(battleParams, battleParams->pd);
     }
 }
 
@@ -314,31 +274,39 @@ void handleBattleEscape(BattleParams* battleParams) {
 }
 
 void handlePlayerMove(BattleParams* battleParams) {
-    PlaydateAPI* pd = battleParams->pd;
-    PDButtons btn_pressed;
-    pd->system->getButtonState(NULL, &btn_pressed, NULL);
-
-
     battleParams->currentState = PLAYER_TURN_INIT;
     return;
 }
 
 void handleFightLoop(BattleParams* battleParams) {
-
-    while ( battleParams->sequence[battleParams->currSequencePos] >= 3 ) {
-        battleParams->currSequencePos = (battleParams->currSequencePos + 1) % (3 + battleParams->enemyCount); 
+    battleParams->currSequencePos = (battleParams->currSequencePos + 1) % (3 + battleParams->enemyCount);
+    if (battleParams->sequence[battleParams->currSequencePos] < 3) {
+        battleParams->activePlayerIndex = battleParams->sequence[battleParams->currSequencePos];
+        battleParams->currentState = PLAYER_TURN_INIT;
+        drawPlayerMenu(battleParams, battleParams->pd);
+    } else {
+        battleParams->currentState = ENEMY_TURN;
     }
+}
 
-    battleParams->currentState = PLAYER_TURN_INIT;
-    battleParams->pd->system->logToConsole("Current Sequence pos: %d", battleParams->currSequencePos);
+void handleEnemyTurn(BattleParams* battleParams) {
+    Enemy e = battleParams->enemies[battleParams->sequence[battleParams->currSequencePos] - 3];
 
-    // battleParams->currSequencePos++;
-    // if(battleParams->currSequencePos >= (3 + battleParams->enemyCount)) {
-    //     battleParams->currSequencePos = 0;
-    // }
-    // if (battleParams->currSequencePos < 3) {
-    //     battleParams->currentState = PLAYER_TURN_INIT;
-    // } else {
-    //     battleParams->currentState = ENEMY_TURN;
-    // }
+    int rAttack = rand() % e.attackCount;
+    int countPlayer = 0;
+    for(int i = 0; i < 3; i++) {
+        if(battleParams->players[i]->isAlive) countPlayer++;
+    }
+    int rPlayer = rand() % countPlayer;
+    
+    int dmg = takeDamage(battleParams->players[rPlayer], e.attacks[rAttack]);
+
+    char *c = NULL;
+    battleParams->pd->system->formatString(&c, "'%s' took %d damage from '%s' casting '%s'!", battleParams->players[rPlayer]->name, dmg, e.name, e.attacks[rAttack].name);
+    if(c != NULL) {
+        strcpy(battleParams->areaText, c);
+    } else {
+        strcpy(battleParams->areaText, "Missed!");
+    }
+    battleParams->currentState = SHOW_ENEMY_ATTACK;
 }

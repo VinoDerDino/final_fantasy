@@ -13,6 +13,7 @@ typedef enum {
 typedef struct {
     const char *name;
     int size_col, size_row;
+    int damage, damageVariance;
     AttackTypeEnemy type;
 } AttackEnemy;
 
@@ -21,7 +22,7 @@ typedef struct {
     int id;
     int hp;
     bool isAlive;
-    int attack;
+    bool hit;
     int defense;
     int resistence;
     int lvl;

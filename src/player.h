@@ -6,6 +6,7 @@
 #include "inventory.h"
 #include "attack.h"
 #include "sprite.h"
+#include "enemy.h"
 
 #define MAX_PLAYER_COUNT 3
 #define TOTAL_PLAYER_COUNT 10
@@ -32,6 +33,7 @@ typedef struct {
     AnimatedSprite sprite;
     PlayerMovement movement;
     Attack attacks[4];
+    bool isAlive;
 } Player;
 
 typedef struct {
@@ -43,5 +45,7 @@ typedef struct {
     Player chars[TOTAL_PLAYER_COUNT];
     int current_index;
 } PlayerPreviewList;
+
+int takeDamage(Player* player, AttackEnemy attack);
 
 #endif

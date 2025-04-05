@@ -47,13 +47,12 @@ Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect)
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
         battleParams->selectX = 0;
         battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
-        pd->system->logToConsole("X: %d, Y:%d", battleParams->selectX, battleParams->selectY);
     
         int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
         int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
         LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
         pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
+        clearInfoArea(pd);
     }
 
     if ((btn_pressed & kButtonA) || onSelect) {
@@ -71,7 +70,7 @@ Enemy* getEnemyAtPos(BattleParams* battleParams, int selectX, int selectY) {
 
     for(int i = 0; i < battleParams->enemyCount; i++) {
         Enemy* e = &battleParams->enemies[i];
-        // if(e->hp <= 0) continue;
+        if(!e->isAlive) continue;
         if(e->fight_x == selectX && e->fight_y == selectY) {
             return e;
         }
@@ -92,22 +91,44 @@ Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect) {
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
         battleParams->selectX = 1 + ((battleParams->selectX - 1 + dx) % 2);
         battleParams->selectY = (battleParams->selectY + dy + 3) % 3;
-        pd->system->logToConsole("X: %d, Y:%d", battleParams->selectX, battleParams->selectY);
     
         int newSelectX = selectPositions[battleParams->selectX][battleParams->selectY][0];
         int newSelectY = selectPositions[battleParams->selectX][battleParams->selectY][1];
         LCDBitmap* s = pd->graphics->getTableBitmap(battleParams->selectorIcons, 2);
         pd->graphics->drawBitmap(s, newSelectX - 30, newSelectY, kBitmapUnflipped);
-        pd->graphics->fillRect(0, 155, 400, 85, kColorWhite);
+        clearInfoArea(pd);
     }
 
     if ((btn_pressed & kButtonA) || onSelect) {
         for (int i = 3; i < NUM_PLAYERS + battleParams->enemyCount; i++) {
             Enemy* e = &battleParams->enemies[i];
-            if (e && e->fight_x == battleParams->selectX && e->fight_y == battleParams->selectY) {
+            if (e && e->isAlive && e->fight_x == battleParams->selectX && e->fight_y == battleParams->selectY) {
                 return e;
             }
         }
     }
     return NULL;
+}
+
+char *substring(const char* str, size_t n) {
+    size_t len = strlen(str);
+    if(n > len) n = len;
+
+    char* result = malloc(n + 1);
+    if(result == NULL) return NULL;
+
+    strncpy(result, str, n);
+    result[n] = '\0';
+
+    return result;
+}
+
+void clearInfoArea(PlaydateAPI* pd) {
+    pd->graphics->fillRect(4, 165, 392, 72, kColorWhite);
+    pd->graphics->fillRect(10, 158, 380, 79, kColorWhite);
+}
+
+void getGridPosition(int fight_x, int fight_y, int* xPos, int* yPos) {
+    *xPos = selectPositions[fight_x][fight_y][0];
+    *yPos = selectPositions[fight_x][fight_y][1];
 }

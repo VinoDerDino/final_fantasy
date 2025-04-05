@@ -38,8 +38,6 @@ extern const int menuPositions[4][2];
 
 // drawing functions
 void drawButton(PlaydateAPI* pd, int x, int y, int width, int height, const char* text, bool highlighted);
-bool drawAttackButtonAnimation(void* params, float dt);
-bool drawAttackButtonAnimationReverse(void* params, float dt);
 void drawGridLeft(PlaydateAPI* pd);
 void drawGridRight(BattleParams* battleParams, PlaydateAPI* pd);
 void drawAttackOptions(BattleParams* battleParams, PlaydateAPI* pd);
@@ -47,6 +45,9 @@ void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd);
 void drawFillHealthbar(PlaydateAPI* pd, int curr_health, int total_health);
 void drawPlayerMenu(BattleParams* battleParams, PlaydateAPI* pd);
 void drawActionAndTargetTooltips(BattleParams* battleParams, PlaydateAPI* pd);
+bool drawEnemiesHit(BattleParams* battleParams, float dt);
+bool drawTextArea(BattleParams* battleParams, float dt, bool flush);
+void drawSelector(BattleParams* battleParams);
 
 //logic functions
 void handlePlayerMenu(BattleParams* battleParams, float dt);
@@ -59,6 +60,7 @@ void handlePlayerMove(BattleParams* battleParams);
 void handlePlayerSelectTargetAlly(BattleParams *battleParams);
 void handlePlayerSelectTargetEnemy(BattleParams *battleParams);
 void assertAction(BattleParams *battleParams);
+void handleEnemyTurn(BattleParams* battleParams);
 
 //helper functions
 int attackEnemy(Enemy *e, Attack attack);
@@ -67,5 +69,8 @@ Player* selectPlayer(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect)
 Enemy* getEnemyAtPos(BattleParams* battleParams, int selectX, int selectY);
 Enemy* selectEnemy(BattleParams* battleParams, PlaydateAPI* pd, bool onSelect);
 void shuffleSequence(int* sequence, int count);
+char *substring(const char* str, size_t n);
+void clearInfoArea(PlaydateAPI* pd);
+void getGridPosition(int fight_x, int fight_y, int* xPos, int* yPos);
 
 #endif

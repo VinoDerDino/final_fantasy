@@ -1,7 +1,7 @@
 #include "enemy.h"
 
 Enemy enemies[] = {
-    {"Slime", 0, 20, true, 4, 0, 0, 1, 1, (AttackEnemy[]){{"Goup", 1, 1, STANDARD}}, 1, 0, 0},
-    {"Octi", 1, 20, true, 4, 0, 0, 1, 1, (AttackEnemy[]){{"Goup", 1, 1, STANDARD}}, 1, 1, 0},
-    {"Frank", 2, 20, true, 4, 0, 0, 1, 1, (AttackEnemy[]){{"Goup", 1, 1, STANDARD}}, 1, 2, 0},
+    {"Nico ist ein wixxer", 0, 20, true, false, 4, 0, 1, 1, (AttackEnemy[]){{"Goup", 1, 1, 3, 2, STANDARD}}, 1, (int)0, BASIC_ATTACK},
+    {"Hurensohn", 1, 20, true, false, 4, 0, 1, 1, (AttackEnemy[]){{"Goup", 1, 1, 3, 2, STANDARD}}, 1, (int)1, BASIC_ATTACK},
+    {"Naut", 2, 20, true, false, 4, 0, 1, 1, (AttackEnemy[]){{"Goup", 1, 1, 3, 2, STANDARD}}, 1, (int)2, BASIC_ATTACK},
 };

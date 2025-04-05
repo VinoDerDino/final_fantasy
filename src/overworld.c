@@ -103,7 +103,6 @@ void processPlayerInput(Player* player, const World* world, PlaydateAPI* pd, PDB
         player->movement.targetY = new_y;
         player->movement.isMoving = 1;
         player->movement.elapsedTime = 0;
-
     }
 }
 

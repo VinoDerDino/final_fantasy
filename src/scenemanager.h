@@ -29,17 +29,18 @@ typedef enum
     PLAYER_MENU,
     PLAYER_MENU_EXIT,
     PLAYER_SELECT_INFO,
-    PLAYER_ATTACK_SELECTION_ANIMATION,
-    PLAYER_ATTACK_SELECTION_ANIMATION_REVERSE,
     PLAYER_ATTACK_SELECTION,
     PLAYER_MOVE,
     PLAYER_SELECT_PLAYER,
     PLAYER_SELECT_ENEMY,
     PLAYER_SELECT_TARGET_ALLY,
     PLAYER_SELECT_TARGET_ENEMY,
+    HANDLE_ACTION,
     ASSERT_ATTACK,
     FIGHT_LOOP,
     ENEMY_TURN,
+    SHOW_ENEMY_ATTACK,
+    ENEMIES_HIT,
     REDRAW_ENEMIES,
     BATTLE_ESCAPE
 } BattleStates;
@@ -104,16 +105,18 @@ typedef struct {
     int activePlayerIndex;      // Whose turn it is
     int menuIndex;              // Current menu position
 
-    // Menu/UI Flags
-    bool exitMenu;
-    bool enterMenu;
-    float menuOffset;
+    // Flags
+    float elapsedEnemiesHitTime, enemyHitLastOffsetChangeTime;
+    int enemyHitOffsetX, enemyHitOffsetY;
 
     // Visuals
-    LCDBitmap* characterInfoBitmap;
-    int characterInfoOffset;
     LCDBitmapTable* selectorIcons;
     LCDBitmapTable* enemySprites;
+    int characterInfoOffset;
+    LCDBitmap* characterInfoBitmap;
+    char *areaText;
+    float elapsedTimeText;
+    LCDBitmap* textAreaBitmap;
 
     // Player Action Info
     Attack currentAttack;
