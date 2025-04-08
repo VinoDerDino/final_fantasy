@@ -9,11 +9,18 @@ int selectPositions[GRID_SIZE][GRID_SIZE][2] = {
 };
 
 const char* menuOptions[4] = {"Attack", "Show Infos", "Escape", "Move Player"};
+// const int menuPositions[4][2] = {
+//     {20, 163},
+//     {255, 163},
+//     {20, 203},
+//     {255, 203}
+// };
+
 const int menuPositions[4][2] = {
-    {20, 160},
-    {255, 160},
-    {20, 200},
-    {255, 200}
+    {50, 163},
+    {225, 163},
+    {50, 203},
+    {225, 203}
 };
 
 void battleOnEnter(void *params) {
