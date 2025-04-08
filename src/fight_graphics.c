@@ -53,7 +53,7 @@ void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd) {
     const int sequenceCount = 3 + battleParams->enemyCount;
     const int offset = ((3 + battleParams->enemyCount) / 2) * 18;
     const int rectX = 196 - offset;
-    const int rectWidth = 18 * (3 + battleParams->enemyCount) + 4;
+    const int rectWidth = 18 * (3 + battleParams->enemyCount) + 6;
 
     pd->graphics->fillRect(rectX, -1, rectWidth, 22, kColorWhite);
     pd->graphics->drawRect(rectX, -1, rectWidth, 22, kColorBlack);
@@ -64,12 +64,21 @@ void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd) {
 
         int curr = battleParams->sequence[i];
         LCDBitmap *m = NULL;
-        if (curr < 3) 
+        bool alive = false;
+        if (curr < 3) {
             m = pd->graphics->getTableBitmap(battleParams->players[curr]->sprite.table, 0);
-        else  
+            alive = battleParams->players[curr]->isAlive;
+        } else {
             m = pd->graphics->getTableBitmap(battleParams->enemySprites, battleParams->enemies[curr - 3].id);
+            alive = battleParams->enemies[curr - 3].isAlive;
+        }  
 
         pd->graphics->drawScaledBitmap(m, (200 - offset) + i * 18, 1, 0.5, 0.5);
+
+        if(!alive) {
+            pd->graphics->drawLine( ((200 - offset) + i * 18) + 2, 2,  ((200 - offset) + (i + 1) * 18) - 2, 16, 1, kColorBlack);
+            pd->graphics->drawLine( ((200 - offset) + i * 18) + 2, 16,  ((200 - offset) + (i + 1) * 18) - 2, 2, 1, kColorBlack);
+        }
         
         if (i == battleParams->currSequencePos) 
             pd->graphics->fillRect((199 - offset) + i * 18, 0, 18, 18, kColorXOR);
@@ -128,20 +137,20 @@ void drawActionAndTargetTooltips(BattleParams* battleParams, PlaydateAPI* pd) {
 
     clearInfoArea(pd);
     pd->graphics->drawText(attack.name, strlen(attack.name), kASCIIEncoding, 10, 175);
-    const char *s;
+    char *s;
     pd->system->formatString(&s, "DMG: %d", attack.dmg);
     pd->graphics->drawText(s, strlen(s), kASCIIEncoding, 10, 195);
     Enemy *e = getEnemyAtPos(battleParams, battleParams->selectX, battleParams->selectY);
-    pd->system->realloc(s, 0);
+    pd->system->realloc((void*)s, 0);
 
     if(e == NULL) {
         pd->graphics->drawText("No Enemy selected", strlen("No Enemy selected"), kASCIIEncoding, 210, 175);
     } else {
         pd->graphics->drawText(e->name, strlen(e->name), kASCIIEncoding, 210, 175);
-        const char *s2;
+        char *s2;
         pd->system->formatString(&s2, "HP: %d", e->hp);
         pd->graphics->drawText(s2, strlen(s2), kASCIIEncoding, 210, 195);
-        pd->system->realloc(s2, 0); 
+        pd->system->realloc((void*)s2, 0); 
     }
 }
 
@@ -149,14 +158,14 @@ bool drawTextArea(BattleParams* battleParams, float dt, bool flush) {
     PlaydateAPI* pd = battleParams->pd;
     battleParams->elapsedTimeText += dt;
 
-    if(battleParams->elapsedTimeText < (strlen(battleParams->areaText) * 0.05f) + 1.0) {
+    if(battleParams->elapsedTimeText < (strlen(battleParams->areaText) * 0.05f) + 1.0f) {
+        clearInfoArea(pd);
         int len = (int)(battleParams->elapsedTimeText / 0.05f);
         char *c = substring(battleParams->areaText, len);
         if(c == NULL) return false;
         
         pd->graphics->drawTextInRect(c, strlen(c), kASCIIEncoding, 10, 170, 380, 60, kWrapWord, kAlignTextCenter);
         free(c);
-        if(flush) clearInfoArea(pd);
         return false;
     }
     if(flush) clearInfoArea(pd);
@@ -168,7 +177,7 @@ bool drawEnemiesHit(BattleParams* battleParams, float dt) {
     float elapsedTime = battleParams->elapsedEnemiesHitTime;
     PlaydateAPI* pd = battleParams->pd;
 
-    bool isTextDrawn = drawTextArea(battleParams, dt, false);
+    bool isTextDrawn = drawTextArea(battleParams, dt, true);
     if (elapsedTime >= 1.7f && isTextDrawn) {
         clearInfoArea(pd);
         for(int i = 0; i < battleParams->enemyCount; i++) {
