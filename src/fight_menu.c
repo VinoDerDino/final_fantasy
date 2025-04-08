@@ -279,14 +279,27 @@ void handlePlayerMove(BattleParams* battleParams) {
 }
 
 void handleFightLoop(BattleParams* battleParams) {
-    battleParams->currSequencePos = (battleParams->currSequencePos + 1) % (3 + battleParams->enemyCount);
-    if (battleParams->sequence[battleParams->currSequencePos] < 3) {
-        battleParams->activePlayerIndex = battleParams->sequence[battleParams->currSequencePos];
-        battleParams->currentState = PLAYER_TURN_INIT;
-        drawPlayerMenu(battleParams, battleParams->pd);
-    } else {
-        battleParams->currentState = ENEMY_TURN;
-    }
+    do {
+        battleParams->currSequencePos = (battleParams->currSequencePos + 1) % (3 + battleParams->enemyCount);
+        bool retrigger = false;
+        battleParams->pd->system->logToConsole("FightLoop! %d", battleParams->currSequencePos);
+
+        if (battleParams->sequence[battleParams->currSequencePos] < 3) {
+            if (!battleParams->players[battleParams->sequence[battleParams->currSequencePos]]->isAlive) retrigger = true;
+
+            battleParams->activePlayerIndex = battleParams->sequence[battleParams->currSequencePos];
+            battleParams->currentState = PLAYER_TURN_INIT;
+            drawPlayerMenu(battleParams, battleParams->pd);
+        } else {
+            if (!battleParams->enemies[battleParams->sequence[battleParams->currSequencePos] - 3].isAlive) retrigger = true;
+
+            battleParams->currentState = ENEMY_TURN;
+        }
+
+        if (!retrigger) break;
+
+        battleParams->pd->system->logToConsole("Retriggered");
+    } while (true);
 }
 
 void handleEnemyTurn(BattleParams* battleParams) {
