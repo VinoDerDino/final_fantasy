@@ -72,5 +72,7 @@ void shuffleSequence(int* sequence, int count);
 char *substring(const char* str, size_t n);
 void clearInfoArea(PlaydateAPI* pd);
 void getGridPosition(int fight_x, int fight_y, int* xPos, int* yPos);
+void playAButtonSound(BattleParams *battleParams);
+void playBButtonSound(BattleParams *battleParams);
 
 #endif

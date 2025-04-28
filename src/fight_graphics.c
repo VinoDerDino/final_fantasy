@@ -76,8 +76,8 @@ void drawAttackSequence(BattleParams* battleParams, PlaydateAPI* pd) {
         pd->graphics->drawScaledBitmap(m, (200 - offset) + i * 18, 1, 0.5, 0.5);
 
         if(!alive) {
-            pd->graphics->drawLine( ((200 - offset) + i * 18) + 2, 2,  ((200 - offset) + (i + 1) * 18) - 2, 16, 1, kColorBlack);
-            pd->graphics->drawLine( ((200 - offset) + i * 18) + 2, 16,  ((200 - offset) + (i + 1) * 18) - 2, 2, 1, kColorBlack);
+            pd->graphics->drawLine( ((200 - offset) + i * 18), 2,  ((200 - offset) + (i + 1) * 18) - 4, 16, 1, kColorBlack);
+            pd->graphics->drawLine( ((200 - offset) + i * 18), 16,  ((200 - offset) + (i + 1) * 18) - 4, 2, 1, kColorBlack);
         }
         
         if (i == battleParams->currSequencePos) 
@@ -165,10 +165,15 @@ bool drawTextArea(BattleParams* battleParams, float dt, bool flush) {
         if(c == NULL) return false;
         
         pd->graphics->drawTextInRect(c, strlen(c), kASCIIEncoding, 10, 170, 380, 60, kWrapWord, kAlignTextCenter);
+        if(battleParams->lastTextLength < len && battleParams->lastTextLength < strlen(battleParams->areaText)) {
+            battleParams->lastTextLength = len;
+            pd->sound->synth->playNote(battleParams->synth, 600.f, 0.5f, 0.05f, 0);
+        }
         free(c);
         return false;
     }
     if(flush) clearInfoArea(pd);
+    battleParams->lastTextLength = 0;
     return true;
 }
 

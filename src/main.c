@@ -158,6 +158,9 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg) {
 		b_params.areaText = malloc(512);
 		b_params.textAreaBitmap = newBitmap("images/fight_text_area", pd);
 		b_params.infoTargetPlayer = NULL;
+		b_params.synth = pd->sound->synth->newSynth();
+		b_params.sound_effect = pd->sound->channel->newChannel();
+		b_params.lastTextLength = 0;
 
 		manager.pendingSceneChange = PENDING;
 

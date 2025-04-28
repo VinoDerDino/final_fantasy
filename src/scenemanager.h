@@ -118,6 +118,11 @@ typedef struct {
     float elapsedTimeText;
     LCDBitmap* textAreaBitmap;
 
+    //Audio
+    PDSynth *synth;
+    SoundChannel *sound_effect;
+    int lastTextLength;
+
     // Player Action Info
     Attack currentAttack;
     Player* infoTargetPlayer;

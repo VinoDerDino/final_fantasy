@@ -26,6 +26,17 @@ const int menuPositions[4][2] = {
 void battleOnEnter(void *params) {
     BattleParams* battleParams = (BattleParams*)params;
     PlaydateAPI* pd = battleParams->pd;
+
+    pd->sound->channel->addSource(battleParams->sound_effect, (SoundSource*)battleParams->synth);
+    pd->sound->channel->setVolume(battleParams->sound_effect, 1.f);
+
+    pd->sound->synth->setWaveform(battleParams->synth, kWaveformSawtooth); // Rechteck für knackigen Klang
+    pd->sound->synth->setAttackTime(battleParams->synth, 0.001f);  // Fast sofortiger Start
+    pd->sound->synth->setDecayTime(battleParams->synth, 0.02f);    // Sehr kurze Abklingzeit
+    pd->sound->synth->setSustainLevel(battleParams->synth, 0.0f);  // Kein Sustain (nur plopp)
+    pd->sound->synth->setReleaseTime(battleParams->synth, 0.02f);  // Kurz ausklingen
+    pd->sound->synth->setVolume(battleParams->synth, 1.f, 1.f);
+    pd->sound->addChannel(battleParams->sound_effect);
     
     pd->graphics->clear(kColorWhite);
     battleParams->currentState = PLAYER_TURN_INIT;

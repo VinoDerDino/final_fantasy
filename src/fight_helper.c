@@ -132,3 +132,11 @@ void getGridPosition(int fight_x, int fight_y, int* xPos, int* yPos) {
     *xPos = selectPositions[fight_x][fight_y][0];
     *yPos = selectPositions[fight_x][fight_y][1];
 }
+
+void playAButtonSound(BattleParams *battleParams) {
+    battleParams->pd->sound->synth->playNote(battleParams->synth, 400.f, 1.f, 0.2f, 0);
+}
+
+void playBButtonSound(BattleParams *battleParams) {
+    battleParams->pd->sound->synth->playNote(battleParams->synth, 300.f, 1.f, 0.2f, 0);
+}

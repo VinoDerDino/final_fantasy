@@ -27,12 +27,17 @@ void handlePlayerMenu(BattleParams* battleParams, float dt) {
                 break;
             }
         }
+        playAButtonSound(battleParams);
     }
 
     int dx = 0, dy = 0;
     getDirection(btn_pressed, &dx, &dy); 
     if (dx || dy) {
-        battleParams->menuIndex = (battleParams->menuIndex + dx + 2 * dy + 4) % 4;
+        int col = battleParams->menuIndex % 2;
+        int row = battleParams->menuIndex / 2;
+        if (dx) col = 1 - col;
+        if (dy) row = 1 - row;
+        battleParams->menuIndex = row * 2 + col;
         drawPlayerMenu(battleParams, pd);
     }
 }
@@ -49,6 +54,7 @@ void handlePlayerSelectInfo(BattleParams* battleParams, float dt) {
         getGridPosition(battleParams->selectX, battleParams->selectY, &oldSelectX, &oldSelectY);
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
         battleParams->currentState = PLAYER_TURN_INIT;
+        playBButtonSound(battleParams);
         return;
     }
     
@@ -180,7 +186,13 @@ void handlePlayerSelectTargetAlly(BattleParams *battleParams) {
         int oldSelectX, oldSelectY;
         getGridPosition(battleParams->selectX, battleParams->selectY, &oldSelectX, &oldSelectY);
         pd->graphics->fillRect(oldSelectX - 12, oldSelectY + 12, 8, 8, kColorWhite);
-        battleParams->currentState = (btn_pressed & kButtonA) ? ASSERT_ATTACK : PLAYER_ATTACK_SELECTION;
+        if (btn_pressed & kButtonA) {
+            battleParams->currentState = ASSERT_ATTACK;
+            playAButtonSound(battleParams);
+        } else {
+            battleParams->currentState = PLAYER_ATTACK_SELECTION;
+            playBButtonSound(battleParams);
+        }
     }
 
     int dx = 0, dy = 0;
@@ -215,9 +227,11 @@ void handlePlayerSelectTargetEnemy(BattleParams *battleParams) {
         
         if(btn_pressed & kButtonA) {
             battleParams->currentState = ASSERT_ATTACK;
+            playAButtonSound(battleParams);
         } else {
             battleParams->currentState = PLAYER_ATTACK_SELECTION;
             drawAttackOptions(battleParams, battleParams->pd);
+            playBButtonSound(battleParams);
         }
         return;
     }
@@ -263,9 +277,11 @@ void handlePlayerAttackSelection(BattleParams* battleParams, float dt) {
 
     if (btn_pressed & kButtonA) {
         battleParams->currentState = HANDLE_ACTION;
+        playAButtonSound(battleParams);
     } else if (btn_pressed & kButtonB) {
         battleParams->currentState = PLAYER_TURN_INIT;
         drawPlayerMenu(battleParams, battleParams->pd);
+        playBButtonSound(battleParams);
     }
 }
 
