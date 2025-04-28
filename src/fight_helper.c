@@ -9,10 +9,9 @@ int attackEnemy(Enemy *e, Attack attack) {
     if(attack.type != PIERCING_ATTACK) {
         totalDamage -= e->defense;
     }
+    
     e->hp -= totalDamage;
-    if(e->hp <= 0) {
-        e->isAlive = false;
-    }
+    e->isAlive = e->hp <= 0;
     return totalDamage;
 }
 
